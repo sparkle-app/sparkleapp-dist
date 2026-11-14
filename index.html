@@ -1,0 +1,599 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Sparkle — рабочее место аналитика</title>
+  <meta name="description" content="Sparkle: методологии и инструменты для стратегических сессий, управления рисками и роста выручки. Zero-server клиентская архитектура на WebAssembly.">
+  
+  <!-- Typography & Styles -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/modals.css">
+
+  <!-- Autonomous Local Plotly Bundle -->
+  <script src="vendor/plotly.min.js"></script>
+</head>
+<body>
+
+  <!-- Mobile Topbar (<= 900px) -->
+  <header class="top">
+    <a class="logo" href="#home">
+      <svg width="28" height="10" viewBox="0 0 34 12" aria-hidden="true">
+        <defs>
+          <linearGradient id="lg-top" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ff9a3d"/>
+            <stop offset="100%" stop-color="#ff3d71"/>
+          </linearGradient>
+        </defs>
+        <path fill="url(#lg-top)" d="M6 0l6 12H0zM17 0l6 12H11zM28 0l6 12H22z"/>
+      </svg>
+      Sparkle
+    </a>
+    <button class="sbtn" data-pal aria-label="Поиск">
+      <kbd>Ctrl K</kbd>
+    </button>
+  </header>
+
+  <!-- Main Application Grid -->
+  <div class="app">
+    <!-- Sticky 256px Sidebar -->
+    <aside class="side">
+      <a class="logo" href="#home">
+        <svg width="34" height="12" viewBox="0 0 34 12" aria-hidden="true">
+          <defs>
+            <linearGradient id="lg-side" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#ff9a3d"/>
+              <stop offset="100%" stop-color="#ff3d71"/>
+            </linearGradient>
+          </defs>
+          <path fill="url(#lg-side)" d="M6 0l6 12H0zM17 0l6 12H11zM28 0l6 12H22z"/>
+        </svg>
+        Sparkle
+      </a>
+
+      <button class="sbtn" data-pal>
+        Быстрый переход <kbd>Ctrl K</kbd>
+      </button>
+
+      <!-- Navigation links populated by js/app.js -->
+      <nav id="nav"></nav>
+
+      <div class="side-footer">
+        <button class="theme-toggle-btn" id="theme-toggle" type="button">
+          <span id="theme-toggle-text">Тёмная тема</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+        <a href="#settings" data-id="settings" style="font-size:13px;padding:6px 12px">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+          Настройки AI API
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <main>
+      <!-- Service bar -->
+      <div class="service-header" style="border-radius:12px;margin-bottom:20px">
+        <span>Sparkle Analytics Platform</span>
+        <span class="badge">v1.2.0 (Wasm Client)</span>
+      </div>
+
+      <!-- Breadcrumbs & Segmented Controls -->
+      <div id="crumb"></div>
+
+      <!-- SECTION: #home -->
+      <section id="home" class="on">
+        <div class="hero">
+          <h1>Структурируем данные.<br>Выделяем главное.</h1>
+          <p class="sub">Методологии и инструменты для стратегических сессий, управления рисками и роста выручки. Попробуйте прямо сейчас: измените название товара.</p>
+          <div class="live">
+            <input id="li" value="сырпарм200гготовкупотр599рСЫРЗАВОД" aria-label="Название товара" spellcheck="false">
+            <div id="lo"></div>
+          </div>
+        </div>
+
+        <div class="bento">
+          <a class="tile w" href="#prep" style="--c:var(--strat)">
+            <h2>Подготовить аналитику к стратегической сессии</h2>
+            <p>Загрузите данные и получите презентацию для внутренней встречи.</p>
+            <span class="chip">.xlsx → презентация</span>
+          </a>
+          <a class="tile" href="#attrs" style="--c:var(--rgm)">
+            <h2>Разложить названия товаров на параметры</h2>
+            <p>Категория, вес и цена из чековых названий.</p>
+            <span class="chip">текст → таблица</span>
+          </a>
+          <a class="tile s" href="#riskmap" style="--c:var(--risk)">
+            <h2>Составить карту рисков</h2>
+            <p>Вероятность и влияние на интерактивной схеме 3×3.</p>
+          </a>
+          <a class="tile" href="#framework" style="--c:var(--strat)">
+            <h2>Спланировать стратегическую сессию</h2>
+            <p>Чек-лист от подготовки до контроля.</p>
+          </a>
+          <a class="tile" href="#risk" style="--c:var(--risk)">
+            <h2>Запустить управление рисками</h2>
+            <p>Комитет, приоритизация, отслеживание.</p>
+          </a>
+          <a class="tile" href="#market" style="--c:var(--rgm)">
+            <h2>Проанализировать рынок</h2>
+            <p>Отчёт по структуре рынка.</p>
+          </a>
+        </div>
+
+        <div class="cols">
+          <div>
+            <h2>О нас</h2>
+            <p class="sub" style="margin-bottom:0">Мы — Sparkle. Наша миссия — структурировать данные и выделить главное.</p>
+          </div>
+          <div class="panel">
+            <p style="margin-top:0">Разрабатываем продукт, который помогает бизнесу в аналитике своего дальнейшего развития. Ранее руководили трансформацией процессов и инструментов в крупных компаниях РФ, включая лидеров рынка.</p>
+            <p style="margin-bottom:0"><b>Контакты:</b> <a href="mailto:contact@sparkleapp.online" style="color:var(--c)">contact@sparkleapp.online</a></p>
+          </div>
+        </div>
+        <p class="mut" style="margin-top:56px;font-size:13px">Условия использования · Политика конфиденциальности · Zero-Server Architecture</p>
+      </section>
+
+      <!-- SECTION: #framework -->
+      <section id="framework">
+        <h1>Фреймворк стратегической аналитики</h1>
+        <p class="sub">Выберите этап и отмечайте шаги по мере выполнения.</p>
+        <div class="seg" id="ph"></div>
+        <div class="panel" style="margin-top:16px" id="phc"></div>
+
+        <h2 style="margin:48px 0 16px">Из чего состоит фреймворк</h2>
+        <div class="wb" style="grid-template-columns:1fr 1.6fr 1fr;gap:14px">
+          <div class="panel">
+            <h3>1. Цели</h3>
+            <ul>
+              <li>Известен вопрос: миссия, текущее положение, инициативы, план на 12 месяцев</li>
+              <li>Не известен: анализ положения и видение будущего</li>
+            </ul>
+          </div>
+          <div class="panel">
+            <h3>2. Инструменты</h3>
+            <div class="seg" id="tt" style="margin:12px 0"></div>
+            <div id="tl"></div>
+          </div>
+          <div class="panel">
+            <h3>3. Результаты</h3>
+            <div id="rs" style="margin-top:10px"></div>
+          </div>
+        </div>
+        <p style="margin-top:20px">
+          <a class="btn p" href="assets/samples/test_data_fixed.xlsx" download="Пример_результатов_стратегической_сессии.xlsx">Скачать пример в Excel</a>
+        </p>
+      </section>
+
+      <!-- SECTION: #prep -->
+      <section id="prep">
+        <h1>Подготовка аналитики для стратегической сессии</h1>
+        <p class="sub">Три шага до готовой презентации и дашборда.</p>
+
+        <div class="wb">
+          <div class="panel wiz" data-s="0">
+            <ol class="steps">
+              <li>Данные</li>
+              <li>Обработка</li>
+              <li>Результат</li>
+            </ol>
+
+            <div class="pane p0">
+              <h3>Загрузите данные</h3>
+              <p class="mut" style="margin:6px 0 14px">Выберите готовый демо-набор или перетащите файл Excel (.xlsx, до 200 МБ).</p>
+              <div>
+                <button class="btn ex" type="button">Пример 1 (Fixed)</button>
+                <button class="btn ex" type="button">Пример 2 (Fast)</button>
+                <button class="btn ex" type="button">Пример 3 (Multi-year)</button>
+              </div>
+              <label class="drop">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                <span>Перетащите файл сюда или нажмите для выбора</span>
+                <input type="file" accept=".xlsx">
+              </label>
+            </div>
+
+            <div class="pane p1">
+              <h3>Обрабатываем <span class="fn"></span></h3>
+              <div class="pg"><i></i></div>
+              <p class="mut" style="margin:0">Выполняем парсинг calamine и расчет формул VMPC-INO в памяти WebAssembly...</p>
+            </div>
+
+            <div class="pane p2">
+              <h3>Готово: <span class="fn"></span></h3>
+              <p class="mut" style="margin:6px 0 18px">Аналитика рассчитана. Вы можете открыть интерактивный дашборд или скачать слайды.</p>
+              <button class="btn p btn-open-dash" type="button">Открыть в браузере (рекомендуется)</button>
+              <button class="btn btn-download-pptx" type="button">Скачать презентацию (.pptx)</button>
+              <br>
+              <button class="btn ghost again" type="button">Загрузить другие данные</button>
+            </div>
+          </div>
+
+          <div>
+            <div class="panel">
+              <h3>Что вы получите</h3>
+              <ul>
+                <li>Факторный анализ прибыли (VMPC-INO)</li>
+                <li>Динамика прибыли в разрезе категорий и товаров</li>
+                <li>4-квадрантная матрица маржинальности и AI-выводы</li>
+                <li>Сезонность продаж и цен за 12 месяцев</li>
+                <li>Эластичность спроса по цене по каждому SKU</li>
+              </ul>
+            </div>
+            <div class="panel">
+              <h3>Чем лучше альтернатив</h3>
+              <ul>
+                <li>Мгновенный результат без ожидания и без серверов</li>
+                <li>Полная конфиденциальность: данные не уходят в сеть</li>
+                <li>Готовая презентация сразу для совета директоров</li>
+              </ul>
+            </div>
+            <div class="panel">
+              <h3>Кому подойдёт</h3>
+              <div class="seg" id="aud" style="margin:10px 0">
+                <button class="on" type="button">Малый бизнес</button>
+                <button type="button">Средний и крупный</button>
+              </div>
+              <p id="audt" style="margin:0"></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: #dash (8 Plotly Charts matching Streamlit) -->
+      <section id="dash">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+          <div>
+            <h1>Аналитический дашборд</h1>
+            <p class="sub" style="margin:4px 0 0">Интерактивный анализ финансовых факторов и товарной матрицы.</p>
+          </div>
+          <div class="seg" id="dash-tabs">
+            <button class="on" type="button">Текущее положение компании</button>
+            <button type="button">Аналитика по товарам</button>
+            <button type="button">Дополнительно</button>
+          </div>
+        </div>
+
+        <div id="dash-tab-content">
+          <!-- TAB 1: Current position (Waterfall & Profit Bars) -->
+          <div id="dash-tab-1">
+            <div class="chart-grid-2">
+              <div class="chart-card">
+                <div class="chart-card-header">
+                  <div class="chart-card-title">Факторный анализ прибыли VMPC-INO</div>
+                </div>
+                <div id="chart-vmpc" class="chart-wrapper"></div>
+                <div style="margin-top:16px;font-size:13px;color:var(--mut);line-height:1.5">
+                  <b>Инструкция по факторам:</b>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">
+                    <div>• <b>Объем (шт):</b> вклад изменения физ. объемов</div>
+                    <div>• <b>Микс:</b> сдвиг спроса между товарами</div>
+                    <div>• <b>Инфляция:</b> перенос общего роста цен</div>
+                    <div>• <b>Цена:</b> чистое изменение цен</div>
+                    <div>• <b>Затраты:</b> динамика себестоимости</div>
+                    <div>• <b>Новинки / Выводы:</b> ротация ассортимента</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="chart-card">
+                <div class="chart-card-header">
+                  <div class="chart-card-title">Прибыль в разрезе категорий и товаров</div>
+                </div>
+                <div id="chart-profit-bars" class="chart-wrapper"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2: Product analytics (Margin Map, AI Insight, Sales & Margin dynamics) -->
+          <div id="dash-tab-2" hidden>
+            <div class="chart-grid-2">
+              <div>
+                <div class="chart-card">
+                  <div class="chart-card-header">
+                    <div class="chart-card-title">Карта маржинальности (4 квадранта)</div>
+                  </div>
+                  <div id="chart-marg-map" class="chart-wrapper"></div>
+                </div>
+
+                <!-- AI Recommendation Card -->
+                <div class="ai-card">
+                  <div class="ai-card-header">
+                    <span class="ai-badge">AI-аналитик Sparkle</span>
+                    <button class="btn sm ghost" id="btn-run-ai-analysis" style="margin-left:auto" type="button">
+                      Обновить AI-анализ
+                    </button>
+                  </div>
+                  <div class="ai-text" id="dash-ai-content">
+                    Загрузка аналитических рекомендаций...
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div class="chart-card" style="margin-bottom:16px;min-height:340px">
+                  <div class="chart-card-header">
+                    <div class="chart-card-title">Динамика продаж (помесячно)</div>
+                  </div>
+                  <div id="chart-sales-change" class="chart-wrapper" style="min-height:280px"></div>
+                </div>
+
+                <div class="chart-card" style="min-height:340px">
+                  <div class="chart-card-header">
+                    <div class="chart-card-title">Динамика маржинальности (помесячно, %)</div>
+                  </div>
+                  <div id="chart-marg-change" class="chart-wrapper" style="min-height:280px"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 3: Additional (Heatmaps & Elasticity) -->
+          <div id="dash-tab-3" hidden>
+            <div class="chart-grid-2">
+              <div>
+                <div class="chart-card" style="margin-bottom:16px;min-height:380px">
+                  <div class="chart-card-header">
+                    <div class="chart-card-title">Карта сезонности (продажи шт)</div>
+                  </div>
+                  <div id="chart-sales-heat" class="chart-wrapper" style="min-height:320px"></div>
+                </div>
+
+                <div class="chart-card" style="min-height:380px">
+                  <div class="chart-card-header">
+                    <div class="chart-card-title">Карта сезонности (цены)</div>
+                  </div>
+                  <div id="chart-prices-heat" class="chart-wrapper" style="min-height:320px"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="chart-card" style="min-height:780px">
+                  <div class="chart-card-header">
+                    <div class="chart-card-title">Эластичность спроса по цене (Subplots)</div>
+                  </div>
+                  <div id="chart-elasticity" class="chart-wrapper" style="min-height:720px"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: #risk -->
+      <section id="risk">
+        <h1>Фреймворк риск-менеджмента</h1>
+        <p class="sub">Четыре шага от первых рисков до регулярного мониторинга.</p>
+        <div class="panel chk" id="rk"></div>
+        <p style="margin-top:20px">
+          <a class="btn p" href="#riskmap">Перейти к интерактивной карте рисков 3×3</a>
+        </p>
+      </section>
+
+      <!-- SECTION: #riskmap -->
+      <section id="riskmap">
+        <h1>Интерактивная карта рисков 3×3</h1>
+        <p class="sub">Добавьте риск в форму или нажмите на ячейку матрицы для быстрого выбора координат.</p>
+
+        <div class="panel">
+          <div class="rf">
+            <div>
+              <label for="rt">Риск</label>
+              <input class="fi" id="rt" placeholder="Например: Срыв поставки сырья" autocomplete="off">
+            </div>
+            <div>
+              <label for="rp">Вероятность</label>
+              <select id="rp"></select>
+            </div>
+            <div>
+              <label for="ri">Влияние</label>
+              <select id="ri"></select>
+            </div>
+            <div>
+              <label for="rs2">Стратегия</label>
+              <select id="rs2"></select>
+            </div>
+            <button class="btn p" id="ra" type="button" style="margin:0">Добавить</button>
+          </div>
+
+          <div class="rm" id="rm"></div>
+          <p class="mut" id="rn" style="margin:14px 0 0"></p>
+        </div>
+
+        <div class="wb" style="margin-top:20px">
+          <div class="panel">
+            <h3>Стратегии обработки</h3>
+            <div class="sg"><b>Снижение</b>Меры по уменьшению вероятности возникновения риска или его последствий.</div>
+            <div class="sg"><b>Перенос</b>Передача риска третьей стороне (страхование, аутсорсинг, хеджирование).</div>
+            <div class="sg"><b>Уклонение</b>Отказ от рискованной деятельности или изменение контрагентов.</div>
+            <div class="sg"><b>Принятие</b>Осознанное принятие риска, если потенциальная выгода превышает возможные потери.</div>
+          </div>
+          <div class="panel">
+            <h3>Экспорт и отчетность</h3>
+            <p class="mut">Фиксируйте карту решений после заседаний комитета по рискам.</p>
+            <button class="btn p" id="rcp" type="button">Скопировать для Excel (TSV)</button>
+            <a class="btn" href="assets/samples/download_template.pptx" download="Карта_рисков_шаблон.pptx">Шаблон .pptx</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: #market -->
+      <section id="market">
+        <h1>Аналитика рынка</h1>
+        <p class="sub">Загрузите данные о рынке и сформируйте структуру товарных категорий.</p>
+        <div class="wb">
+          <div class="panel wiz" data-s="0">
+            <ol class="steps">
+              <li>Данные</li>
+              <li>Обработка</li>
+              <li>Результат</li>
+            </ol>
+            <div class="pane p0">
+              <h3>Загрузите рыночные срезы</h3>
+              <p class="mut">Используйте демонстрационный файл или загрузите выгрузку.</p>
+              <button class="btn ex" type="button">Демо рынка</button>
+              <label class="drop">
+                <span>Перетащите файл сюда или нажмите для выбора</span>
+                <input type="file" accept=".xlsx">
+              </label>
+            </div>
+            <div class="pane p1">
+              <h3>Анализируем категории <span class="fn"></span></h3>
+              <div class="pg"><i></i></div>
+            </div>
+            <div class="pane p2">
+              <h3>Готово: <span class="fn"></span></h3>
+              <p class="mut">Отчёт готов к просмотру.</p>
+              <button class="btn p btn-open-dash" type="button">Открыть отчёт</button>
+              <button class="btn again" type="button">Загрузить другие данные</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: #attrs -->
+      <section id="attrs">
+        <h1>Выделение параметров товаров (RGM)</h1>
+        <p class="sub">Превращает неструктурированные чековые названия в упорядоченную таблицу параметров.</p>
+
+        <div class="wb" style="grid-template-columns:1fr 1fr">
+          <div class="panel">
+            <h3 style="margin-bottom:12px">Входные данные</h3>
+            <textarea id="ai" spellcheck="false"></textarea>
+            <div>
+              <span class="chip n" id="e1" role="button" tabindex="0">Пример: сыр</span>
+              <span class="chip n" id="e2" role="button" tabindex="0">Пример: молочная полка</span>
+            </div>
+            <p class="mut" style="font-size:13px;margin:8px 0 0">Первая строка: названия параметров через запятую. Далее построчно товары.</p>
+          </div>
+
+          <div class="panel">
+            <h3 style="margin-bottom:12px">Структурированная таблица</h3>
+            <div id="ares"></div>
+            <p style="margin:16px 0 0">
+              <button class="btn p" id="acp" type="button">Скопировать для Excel</button>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECTION: #settings -->
+      <section id="settings">
+        <h1>Настройки AI API и Безопасность</h1>
+        <p class="sub">Управление интеграцией с ProxyAPI для расширенной генерации рекомендаций.</p>
+
+        <div class="panel" style="max-width:720px">
+          <!-- Mandatory Security Banner -->
+          <div class="sec-banner">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+              <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+            </svg>
+            <div>
+              <b>Локальная Zero-Server безопасность</b>
+              <div style="font-size:12px;margin-top:2px">
+                Все вычисления Sparkle и хранение настроек происходят на 100% внутри вашего браузера.
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:16px">
+            <div>
+              <label for="setting-base-url" style="display:block;font-size:13px;font-weight:600;margin-bottom:6px">
+                Базовый URL ProxyAPI
+              </label>
+              <input class="fi" id="setting-base-url" value="https://api.proxyapi.ru/openai/v1">
+            </div>
+
+            <div>
+              <label for="setting-api-key" style="display:block;font-size:13px;font-weight:600;margin-bottom:6px">
+                API-ключ
+              </label>
+              <input class="fi" id="setting-api-key" type="password" placeholder="sk-..." autocomplete="off">
+              <!-- EXACT MANDATORY CAPTION -->
+              <div class="sec-caption">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                <span>Все ключи сохраняются исключительно в вашем браузере (localStorage) и передаются напрямую в API. Мы не собираем, не логируем и не храним ваши данные на сервере.</span>
+              </div>
+            </div>
+
+            <div>
+              <label for="setting-model-select" style="display:block;font-size:13px;font-weight:600;margin-bottom:6px">
+                Модель нейросети
+              </label>
+              <select id="setting-model-select">
+                <option value="mimo/mimo-v2.6-flash">mimo/mimo-v2.6-flash (рекомендуется)</option>
+                <option value="deepseek/deepseek-v4.1-flash-1017">deepseek/deepseek-v4.1-flash-1017</option>
+                <option value="custom">Указать свой ID модели вручную</option>
+              </select>
+            </div>
+
+            <div id="setting-custom-model-group" hidden>
+              <label for="setting-custom-model" style="display:block;font-size:13px;font-weight:600;margin-bottom:6px">
+                Пользовательский ID модели
+              </label>
+              <input class="fi" id="setting-custom-model" placeholder="например, qwen/qwen-2.5-72b-instruct">
+            </div>
+
+            <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;align-items:center">
+              <button class="btn p" id="btn-save-ai-settings" type="button">Сохранить</button>
+              <button class="btn danger" id="btn-clear-ai-settings" type="button">Очистить / Удалить ключи</button>
+              <button class="btn" id="btn-test-ai-connection" type="button">Проверить соединение</button>
+              <span id="ai-test-status" style="font-size:13px;margin-left:8px"></span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Mobile Bottom Tabbar (<= 900px) -->
+  <nav class="tabbar" id="tb" aria-label="Разделы"></nav>
+
+  <!-- Command Palette Modal (#pal) -->
+  <div id="pal" hidden>
+    <div class="pb">
+      <input id="pi" placeholder="Куда перейти? Например: дашборд, карта рисков..." aria-label="Поиск раздела" autocomplete="off">
+      <div id="pl"></div>
+    </div>
+  </div>
+
+  <!-- EXACT MANDATORY SAVE CONFIRMATION MODAL -->
+  <div id="save-key-modal" class="modal-overlay" hidden>
+    <div class="modal-dialog">
+      <div class="modal-title">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+          <polyline points="22 4 12 14.01 9 11.01"/>
+        </svg>
+        Безопасность сохранения ключей
+      </div>
+      <div class="modal-body">
+        Ключи успешно сохранены локально на вашем устройстве. В целях безопасности настоятельно рекомендуем после завершения работы с сервисом очистить/удалить сохранённые API-ключи через меню настроек, даже несмотря на то, что мы не храним и не собираем ваши данные.
+      </div>
+      <div class="modal-actions">
+        <button class="btn p" id="btn-close-sec-modal" type="button">Понятно</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast" role="status"></div>
+
+  <!-- ES Module Application Bootstrap -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
