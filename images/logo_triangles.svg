@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="70 87 1212 331" width="1212" height="331" role="img" aria-label="Sparkle App Triangles Logo">
+  <title>Sparkle App Logo</title>
+  <defs>
+    <!-- Rim: pink on the left, warm cream on the right -->
+    <linearGradient id="rim" x1="50" y1="0" x2="462" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FF8FB8"/>
+      <stop offset="0.5" stop-color="#FFC2B0"/>
+      <stop offset="1" stop-color="#FFD9A0"/>
+    </linearGradient>
+    <!-- Rim: white light falling from the apex -->
+    <linearGradient id="rimLight" x1="0" y1="62" x2="0" y2="418" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.95"/>
+      <stop offset="0.45" stop-color="#FFFFFF" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Core: pink at the apex to amber at the base -->
+    <linearGradient id="core" x1="200" y1="130" x2="330" y2="418" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FF3D8F"/>
+      <stop offset="0.45" stop-color="#FF6A55"/>
+      <stop offset="1" stop-color="#FFAA1D"/>
+    </linearGradient>
+    <radialGradient id="coral" cx="120" cy="410" r="190" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FF4A3D" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#FF4A3D" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="amber" cx="360" cy="420" r="170" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFC02E" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#FFC02E" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="magenta" cx="222" cy="214" r="105" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FF2E95" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#FF2E95" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Glass edge on the core -->
+    <linearGradient id="edge" x1="130" y1="150" x2="380" y2="420" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.75"/>
+      <stop offset="0.5" stop-color="#FFFFFF" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.35"/>
+    </linearGradient>
+
+    <!-- Original Sparkle Triangle -->
+    <g id="sparkle-triangle">
+      <!-- Rim -->
+      <path d="M230.0 106.9C245.1 80.8 266.9 80.8 282.0 106.9L435.9 373.0C451.1 399.1 440.2 418.0 410.0 418.0L102.0 418.0C71.8 418.0 60.9 399.1 76.1 373.0Z" fill="url(#rim)"/>
+      <path d="M230.0 106.9C245.1 80.8 266.9 80.8 282.0 106.9L435.9 373.0C451.1 399.1 440.2 418.0 410.0 418.0L102.0 418.0C71.8 418.0 60.9 399.1 76.1 373.0Z" fill="url(#rimLight)"/>
+
+      <!-- Core -->
+      <path d="M238.7 151.8C248.7 134.5 263.3 134.5 273.3 151.8L403.0 376.0C413.1 393.4 405.8 406.0 385.7 406.0L126.3 406.0C106.2 406.0 98.9 393.4 109.0 376.0Z" fill="url(#core)"/>
+      <path d="M238.7 151.8C248.7 134.5 263.3 134.5 273.3 151.8L403.0 376.0C413.1 393.4 405.8 406.0 385.7 406.0L126.3 406.0C106.2 406.0 98.9 393.4 109.0 376.0Z" fill="url(#coral)"/>
+      <path d="M238.7 151.8C248.7 134.5 263.3 134.5 273.3 151.8L403.0 376.0C413.1 393.4 405.8 406.0 385.7 406.0L126.3 406.0C106.2 406.0 98.9 393.4 109.0 376.0Z" fill="url(#amber)"/>
+      <path d="M238.7 151.8C248.7 134.5 263.3 134.5 273.3 151.8L403.0 376.0C413.1 393.4 405.8 406.0 385.7 406.0L126.3 406.0C106.2 406.0 98.9 393.4 109.0 376.0Z" fill="url(#magenta)"/>
+      <path d="M238.7 151.8C248.7 134.5 263.3 134.5 273.3 151.8L403.0 376.0C413.1 393.4 405.8 406.0 385.7 406.0L126.3 406.0C106.2 406.0 98.9 393.4 109.0 376.0Z" fill="none" stroke="url(#edge)" stroke-width="2"/>
+    </g>
+  </defs>
+  <!-- 3 Triangles in a row -->
+  <g id="triangles-group">
+    <use href="#sparkle-triangle" x="0" y="0"/>
+    <use href="#sparkle-triangle" transform="translate(420, 0)"/>
+    <use href="#sparkle-triangle" transform="translate(840, 0)"/>
+  </g>
+</svg>

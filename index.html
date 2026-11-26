@@ -1,0 +1,3099 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="color-scheme" content="light dark">
+  <script>
+    try {
+      var persistUi = localStorage.getItem('sparkle_ui_persist') === '1';
+      var s = persistUi ? (localStorage.getItem('color-scheme') || 'light') : 'light';
+      document.querySelector('meta[name="color-scheme"]').content = s;
+      document.documentElement.setAttribute('data-theme', s);
+    } catch (e) {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  </script>
+  <meta name="version" content="3.48.5">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="description" content="Sparkle App — методологии и инструменты для стратегии, рисков и роста выручки на WebAssembly">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Sparkle App</title>
+  <link rel="icon" href="images/logo_triangles.svg?v=3.48.5" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="css/main.css?v=3.48.5">
+  <style>@media (forced-colors: active) { :focus-visible { outline: 2px solid Highlight; } }</style>
+  <script src="vendor/plotly.min.js" defer></script>
+</head>
+<body>
+  <noscript><p style="padding:24px">Для работы приложения нужен JavaScript.</p></noscript>
+
+  <div class="app" id="app">
+    <a class="skip" href="#main">К содержимому</a>
+
+    <aside class="sb" aria-label="Боковая панель">
+      <div class="lg">
+        <img class="lg-mark" src="images/logo_triangles.svg?v=3.29.3" alt="" width="48" height="13">
+        <span>Sparkle App</span>
+      </div>
+
+      <nav id="nav" aria-label="Разделы"></nav>
+
+      <div class="sf">
+        <button class="sf-settings-btn" id="btn-open-settings" type="button" title="Настройки (ИИ API и управление данными)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9c.26.6.85 1 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/>
+          </svg>
+          <span>Настройки</span>
+        </button>
+        <div class="sf-legal-row">
+          <button class="sf-link" type="button" data-legal="terms">Оферта</button>
+          <span class="sf-dot" aria-hidden="true">·</span>
+          <button class="sf-link" type="button" data-legal="privacy">Конфиденциальность</button>
+        </div>
+      </div>
+    </aside>
+
+    <div>
+      <header class="tb">
+        <button class="tg" id="tg" type="button" aria-label="Свернуть или развернуть меню" aria-expanded="true">
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+            <path d="M2 4h12M2 8h12M2 12h12"/>
+          </svg>
+        </button>
+        <span id="bc"></span>
+
+        <button class="sr" id="so" type="button">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <circle cx="7" cy="7" r="5"/>
+            <path d="m11 11 3.5 3.5"/>
+          </svg>
+          <span>Найти раздел или действие</span>
+          <kbd>Ctrl K</kbd>
+        </button>
+
+        <button class="theme-btn" id="theme-btn" type="button" aria-label="Включить тёмную тему" title="Сменить тему оформления">
+          <svg class="ic-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+          <svg class="ic-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+        </button>
+      </header>
+
+      <main class="mn" id="main">
+        <!-- ==================== HOME ==================== -->
+        <section data-v="home" class="on">
+          <div class="hero">
+            <div class="hero-main">
+              <h1 tabindex="-1">Структурируем данные и <span class="hl">выделяем главное</span></h1>
+              <p class="hero-sub"><b>Sparkle App</b> — аналитическая платформа для стратегических сессий, управления рисками и роста выручки.</p>
+            </div>
+            <dl class="hero-facts">
+              <div class="hero-fact">
+                <dt>Приватность</dt>
+                <dd>Расчёты локально в&nbsp;браузере (кроме ИИ-моделей по&nbsp;<span lang="en">API</span>)</dd>
+              </div>
+              <div class="hero-fact">
+                <dt>Опыт команды</dt>
+                <dd>Трансформация аналитики в&nbsp;<span lang="en">X5</span>, Лента, <span lang="en">Splat</span></dd>
+              </div>
+            </dl>
+          </div>
+
+          <div class="bn">
+            <article class="tl">
+              <div class="ti">
+                <div class="vis vis-strat" aria-hidden="true">
+                  <svg viewBox="0 0 340 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M98 22 C136 22, 134 60, 166 60" stroke="currentColor" stroke-opacity="0.22" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M98 60 L166 60" stroke="currentColor" stroke-opacity="0.28" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M98 98 C136 98, 134 60, 166 60" stroke="currentColor" stroke-opacity="0.22" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M190 60 C220 60, 218 26, 246 26" stroke="#F26A3D" stroke-width="2.4" stroke-linecap="round"/>
+                    <path d="M190 60 L246 60" stroke="currentColor" stroke-opacity="0.24" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M190 60 C220 60, 218 94, 246 94" stroke="currentColor" stroke-opacity="0.24" stroke-width="2" stroke-linecap="round"/>
+                    <rect x="8" y="10" width="90" height="24" rx="6" fill="currentColor" fill-opacity="0.08"/>
+                    <rect x="20" y="19" width="44" height="6" rx="3" fill="currentColor" fill-opacity="0.24"/>
+                    <rect x="8" y="48" width="90" height="24" rx="6" fill="currentColor" fill-opacity="0.08"/>
+                    <rect x="20" y="57" width="58" height="6" rx="3" fill="currentColor" fill-opacity="0.32"/>
+                    <rect x="8" y="86" width="90" height="24" rx="6" fill="currentColor" fill-opacity="0.08"/>
+                    <rect x="20" y="95" width="38" height="6" rx="3" fill="currentColor" fill-opacity="0.24"/>
+                    <circle cx="178" cy="60" r="14" fill="#F26A3D" fill-opacity="0.14"/>
+                    <circle cx="178" cy="60" r="7" fill="#F26A3D"/>
+                    <rect x="246" y="14" width="86" height="24" rx="6" fill="#F26A3D"/>
+                    <rect x="258" y="23" width="48" height="6" rx="3" fill="#FFFFFF" fill-opacity="0.92"/>
+                    <rect x="246" y="48" width="86" height="24" rx="6" fill="currentColor" fill-opacity="0.08"/>
+                    <rect x="258" y="57" width="42" height="6" rx="3" fill="currentColor" fill-opacity="0.24"/>
+                    <rect x="246" y="82" width="86" height="24" rx="6" fill="currentColor" fill-opacity="0.08"/>
+                    <rect x="258" y="91" width="52" height="6" rx="3" fill="currentColor" fill-opacity="0.24"/>
+                  </svg>
+                </div>
+                <div class="tx">
+                  <span class="nm">01</span>
+                  <h2>Стратегическая сессия</h2>
+                  <p class="dsc">План сессии, аналитика в&nbsp;несколько кликов и&nbsp;приоритизация идей для дорожной карты</p>
+                </div>
+                <div class="ls">
+                  <a class="go" href="#framework">Фреймворк<span aria-hidden="true">→</span></a>
+                  <a class="go" href="#analytics">Подготовка аналитики<span aria-hidden="true">→</span></a>
+                  <a class="go" href="#dashboard">Дашборд<span aria-hidden="true">→</span></a>
+                  <a class="go" href="#rice"><span>Приоритизация (<span lang="en">RICE</span>)</span><span aria-hidden="true">→</span></a>
+                </div>
+              </div>
+            </article>
+
+            <article class="tl t">
+              <div class="ti">
+                <div class="vis vis-risk" aria-hidden="true">
+                  <div class="hm">
+                    <i class="o"></i><i class="r"></i><i class="r"></i>
+                    <i class="g"></i><i class="o"></i><i class="r"></i>
+                    <i class="g"></i><i class="g"></i><i class="o"></i>
+                  </div>
+                </div>
+                <div class="tx">
+                  <span class="nm">02</span>
+                  <h2>Риск-менеджмент</h2>
+                  <p class="dsc">Комитет по&nbsp;управлению рисками, оценка критичности и&nbsp;план реагирования</p>
+                </div>
+                <div class="ls">
+                  <a class="go" href="#risk-framework">Фреймворк и аналитика<span aria-hidden="true">→</span></a>
+                  <a class="go" href="#risk-map">Карта рисков<span aria-hidden="true">→</span></a>
+                </div>
+              </div>
+            </article>
+
+            <article class="tl a">
+              <div class="ti">
+                <div class="vis vis-rgm" aria-hidden="true">
+                  <svg viewBox="0 0 340 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <g fill="currentColor" fill-opacity="0.72">
+                      <rect x="0" y="60" width="44" height="60" rx="5"/>
+                      <rect x="58" y="36" width="44" height="84" rx="5"/>
+                      <rect x="116" y="48" width="44" height="72" rx="5"/>
+                      <rect x="174" y="20" width="44" height="100" rx="5"/>
+                      <rect x="232" y="30" width="44" height="90" rx="5"/>
+                    </g>
+                    <rect x="290" y="0" width="44" height="120" rx="5" fill="#F26A3D"/>
+                  </svg>
+                </div>
+                <div class="tx">
+                  <span class="nm">03</span>
+                  <h2>Рост выручки</h2>
+                  <p class="dsc">Аналитика рынка и&nbsp;автоматическое выделение параметров товаров из&nbsp;названий</p>
+                </div>
+                <div class="ls">
+                  <a class="go" href="#market">Аналитика рынка<span aria-hidden="true">→</span></a>
+                  <a class="go" href="#attributes">Выделение атрибутов<span aria-hidden="true">→</span></a>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- ==================== FRAMEWORK ==================== -->
+        <section data-v="framework" data-fw-view="step">
+          <div class="hd">
+            <h1 tabindex="-1">Фреймворк <span class="hl">стратегической аналитики</span></h1>
+            <div class="ac2">
+              <div class="seg" role="group" aria-label="Режим отображения фреймворка">
+                <button type="button" data-fw-mode="step" aria-pressed="true">Пошагово</button>
+                <button type="button" data-fw-mode="all" aria-pressed="false">Вся схема</button>
+                <button type="button" data-fw-mode="slide" aria-pressed="false">1 слайд</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="fw-stepper" role="tablist" id="phs" aria-label="Фазы стратегической сессии">
+            <button role="tab" type="button" id="ph0" class="fw-step" aria-selected="true" tabindex="0" data-k="0">
+              <span class="fw-step-num">Фаза 01</span>
+              <span class="fw-step-title">Подготовка и цели</span>
+              <span class="fw-step-meta">2 сценария входа · состав · данные</span>
+            </button>
+            <button role="tab" type="button" id="ph1" class="fw-step" aria-selected="false" tabindex="-1" data-k="1">
+              <span class="fw-step-num">Фаза 02</span>
+              <span class="fw-step-title">Инструменты и сессия</span>
+              <span class="fw-step-meta">4 контура диагностики · идеи · RICE</span>
+            </button>
+            <button role="tab" type="button" id="ph2" class="fw-step" aria-selected="false" tabindex="-1" data-k="2">
+              <span class="fw-step-num">Фаза 03</span>
+              <span class="fw-step-title">Результаты и контроль</span>
+              <span class="fw-step-meta">5 артефактов · риски · ресурсы</span>
+            </button>
+          </div>
+
+          <div class="fw-panels">
+            <!-- Phase 1 Panel -->
+            <div role="tabpanel" id="fw-panel-0" aria-labelledby="ph0" data-fw-panel="0">
+              <div class="fw-phase-banner" aria-hidden="true"><span>Фаза 01</span> · Цели и подготовка к стратегической сессии</div>
+              <div class="fw-stage">
+                <div class="fw-card fw-card-steps">
+                  <span class="lb fw-kicker">Ход подготовки</span>
+                  <h2 class="fw-h2">4 шага до&nbsp;старта сессии</h2>
+                  <ol class="fw-ol">
+                    <li><span><b>1.</b> Определение целей и&nbsp;задач</span><i class="fw-tag">Цели</i></li>
+                    <li><span><b>2.</b> Формирование состава участников</span></li>
+                    <li><span><b>3.</b> Подготовка и&nbsp;сверка данных</span><button type="button" class="fw-tag fw-tag-link" data-fw-jump="1" aria-label="Перейти к Фазе 02: Инструменты">Инструменты →</button></li>
+                    <li><span><b>4.</b> Разработка сценария сессии</span></li>
+                  </ol>
+                  <a class="lc" href="#analytics">
+                    <b>Подготовка аналитики<span aria-hidden="true">→</span></b>
+                    <span>Соберёт факторный анализ и&nbsp;графики для&nbsp;сессии в&nbsp;несколько кликов</span>
+                  </a>
+                </div>
+
+                <div class="fw-card">
+                  <span class="lb fw-kicker">Цели · Постановка вопроса</span>
+                  <h2 class="fw-h2">2 сценария входа в&nbsp;сессию</h2>
+                  <div class="fw-split">
+                    <div class="fw-subcard">
+                      <h3>1. Известен стратегический вопрос (примеры)</h3>
+                      <ul class="fw-dl">
+                        <li><b>Миссия:</b> в&nbsp;каком бизнесе мы&nbsp;находимся и&nbsp;какова наша основная цель?</li>
+                        <li><b>Текущее положение:</b> кто наши основные клиенты и&nbsp;как меняются их&nbsp;поведение и&nbsp;потребности?</li>
+                        <li><b>Стратегические инициативы:</b> в&nbsp;какие направления (продукты, рынки, проекты) мы&nbsp;должны инвестировать ресурсы, а&nbsp;от&nbsp;чего стоит отказаться?</li>
+                        <li><b>Планирование действий:</b> каковы наши конкретные цели на&nbsp;ближайшие 12&nbsp;месяцев и&nbsp;как мы&nbsp;будем измерять прогресс?</li>
+                      </ul>
+                    </div>
+                    <div class="fw-subcard">
+                      <h3>2. Не&nbsp;известен стратегический вопрос</h3>
+                      <ul class="fw-dl">
+                        <li><b>Анализ текущего положения:</b> проблемы, сильные стороны, отзывы клиентов и&nbsp;команды.</li>
+                        <li><b>Видение будущего:</b> желаемое положение, целевые показатели, новые желаемые инициативы.</li>
+                        <li><b>Интересы команды:</b> чем команда и&nbsp;руководство хотят заниматься&nbsp;— вовлечённость напрямую влияет на&nbsp;реализацию.</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="fw-nav-row">
+                <span></span>
+                <button type="button" class="bt sm fw-nav-btn" data-fw-jump="1">Фаза 02: Инструменты и сессия <span aria-hidden="true">→</span></button>
+              </div>
+            </div>
+
+            <!-- Phase 2 Panel -->
+            <div role="tabpanel" id="fw-panel-1" aria-labelledby="ph1" data-fw-panel="1" hidden="until-found">
+              <div class="fw-phase-banner" aria-hidden="true"><span>Фаза 02</span> · Инструменты диагностики и проведение сессии</div>
+              <div class="fw-stage">
+                <div class="fw-card fw-card-steps">
+                  <span class="lb fw-kicker">Ход сессии</span>
+                  <h2 class="fw-h2">От&nbsp;данных к&nbsp;приоритетам</h2>
+                  <ol class="fw-ol">
+                    <li><span><b>1.</b> Открытие и&nbsp;введение в&nbsp;контекст</span></li>
+                    <li><span><b>2.</b> Представление подготовленных данных</span></li>
+                    <li>
+                      <div class="fw-ol-body">
+                        <span><b>3.</b> Генерация идей с&nbsp;опорой на&nbsp;фреймворки</span>
+                        <ul class="fw-sublist">
+                          <li>общая (совместный мозговой штурм)</li>
+                          <li>групповая (работа в&nbsp;мини-командах)</li>
+                          <li>индивидуальная (самостоятельная проработка)</li>
+                        </ul>
+                      </div>
+                      <i class="fw-tag">Инструменты</i>
+                    </li>
+                    <li><span><b>4.</b> Определение и&nbsp;приоритизация целей (например, по&nbsp;<span lang="en">RICE</span>)</span><button type="button" class="fw-tag fw-tag-link" data-fw-jump="2" aria-label="Перейти к Фазе 03: Результаты">Результаты →</button></li>
+                  </ol>
+                  <div class="fw-lc-stack">
+                    <a class="lc lc-tight" href="#dashboard">
+                      <b>Дашборд<span aria-hidden="true">→</span></b>
+                      <span>Факторный анализ прибыли <span lang="en">VMPC-INO</span> и&nbsp;динамика показателей</span>
+                    </a>
+                    <a class="lc lc-tight" href="#rice">
+                      <b><span>Приоритизация (<span lang="en">RICE</span>)</span><span aria-hidden="true">→</span></b>
+                      <span>Интерактивная оценка идей, рейтинг и&nbsp;выгрузка в&nbsp;<span lang="en">.xlsx</span></span>
+                    </a>
+                  </div>
+                </div>
+
+                <div class="fw-card">
+                  <div class="fw-card-head-row">
+                    <div>
+                      <span class="lb fw-kicker">Инструменты · 4 контура диагностики</span>
+                      <h2 class="fw-h2">Методики и&nbsp;метрики анализа</h2>
+                    </div>
+                    <span class="fw-chip-legend"><i class="fw-legend-dot" aria-hidden="true"></i>Ключевые методики</span>
+                  </div>
+                  <div class="fw-grid-2">
+                    <div class="fw-subcard">
+                      <h3>1. Компания (основные метрики)</h3>
+                      <ul class="fw-dl">
+                        <li><b>1. Финансовые показатели:</b> прибыль/выручка (<span lang="en">waterfall, VMPC</span>), маржинальность, структура затрат</li>
+                        <li><b>2. Операционные показатели:</b> эффективность производства/логистики/продаж (<span lang="en">ABC/XYZ</span>, эластичность спроса, карта сезонности), качество продукции (отзывы клиентов)</li>
+                        <li><b>3. Персонал:</b> текучка кадров, вовлечённость</li>
+                      </ul>
+                    </div>
+                    <div class="fw-subcard">
+                      <h3>2. Внешняя среда</h3>
+                      <div class="fw-chips" lang="en">
+                        <span class="fw-chip-key">1. PEST(EL)</span>
+                        <span class="fw-chip-key">2. SWOT</span>
+                        <span>3. Porter's 5 Forces</span>
+                        <span>4. BCG Growth-Share Matrix</span>
+                        <span>5. Balanced Scorecard</span>
+                        <span>6. Blue Ocean Strategy</span>
+                        <span>7. Ansoff Matrix</span>
+                        <span>8. McKinsey 7S Framework</span>
+                        <span>9. OKR (Objectives &amp; Key Results)</span>
+                        <span class="fw-chip-key">10. Scenario Planning</span>
+                      </div>
+                    </div>
+                    <div class="fw-subcard">
+                      <h3>3. Внутренняя среда</h3>
+                      <div class="fw-chips" lang="en">
+                        <span class="fw-chip-key">1. Organizational structure</span>
+                        <span>2. Management's interest in success</span>
+                        <span>3. Internal knowledge management &amp; sharing</span>
+                        <span class="fw-chip-key">4. Efficiency checking <em>(internal audit &amp; consulting)</em></span>
+                        <span class="fw-chip-key">5. KPIs &amp; goals culture <em>(ways to plan, achieve &amp; check)</em></span>
+                        <span>6. Finance management <em>(assets, liabilities, turnover, free cash)</em></span>
+                      </div>
+                    </div>
+                    <div class="fw-subcard">
+                      <h3>4. Потребители</h3>
+                      <div class="fw-chips" lang="en">
+                        <span class="fw-chip-key">1. Who are our customers? <em>(product – avatars – purpose)</em></span>
+                        <span class="fw-chip-key">2. What are they buying? <em>(features)</em></span>
+                        <span class="fw-chip-key">3. What are the trends?</span>
+                        <span class="fw-chip-key">4. Sentiment analysis <em>(customers' attitude vs claims)</em></span>
+                        <span>5. STP <em>(Segment., Target., Positioning)</em></span>
+                        <span>6. CJM</span>
+                        <span class="fw-chip-key">7. (OB)PPC</span>
+                        <span>8. Decision Trees</span>
+                        <span>9. Customer Lifetime Value (CLTV)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="fw-nav-row">
+                <button type="button" class="bt sm fw-nav-btn" data-fw-jump="0"><span aria-hidden="true">←</span> Фаза 01: Подготовка и цели</button>
+                <button type="button" class="bt sm fw-nav-btn" data-fw-jump="2">Фаза 03: Результаты и контроль <span aria-hidden="true">→</span></button>
+              </div>
+            </div>
+
+            <!-- Phase 3 Panel -->
+            <div role="tabpanel" id="fw-panel-2" aria-labelledby="ph2" data-fw-panel="2" hidden="until-found">
+              <div class="fw-phase-banner" aria-hidden="true"><span>Фаза 03</span> · Результаты сессии, реализация и контроль</div>
+              <div class="fw-stage">
+                <div class="fw-card fw-card-steps">
+                  <span class="lb fw-kicker">Ход реализации</span>
+                  <h2 class="fw-h2">Перевод стратегии в&nbsp;исполнение</h2>
+                  <ol class="fw-ol">
+                    <li><span><b>1.</b> Переработка целей в&nbsp;конкретные задачи</span><i class="fw-tag">Результаты</i></li>
+                    <li><span><b>2.</b> Информирование сотрудников о&nbsp;целях компании</span></li>
+                    <li><span><b>3.</b> Мониторинг выполнения и&nbsp;корректировка</span></li>
+                  </ol>
+                  <a class="lc" href="#risk-map">
+                    <b>Карта рисков<span aria-hidden="true">→</span></b>
+                    <span>Отслеживание критических рисков по&nbsp;матрице 3×3</span>
+                  </a>
+                </div>
+
+                <div class="fw-card">
+                  <span class="lb fw-kicker">Результаты · Итоги сессии</span>
+                  <h2 class="fw-h2">5 ключевых артефактов</h2>
+                  <div class="fw-grid-2">
+                    <div class="fw-subcard">
+                      <h3>1. Основные цели, драйверы роста</h3>
+                      <ul class="fw-dl">
+                        <li><b>Планы на&nbsp;существующие продукты</b></li>
+                        <li><b>Новые продукты</b></li>
+                        <li><b>Инициативы</b> (приоритизированные, например, по&nbsp;<span lang="en">RICE</span>)</li>
+                      </ul>
+                    </div>
+                    <div class="fw-subcard fw-subcard-linked">
+                      <div class="fw-linked-head">
+                        <h3>2. Ключевые факторы успеха</h3>
+                        <span class="fw-link-arrow" aria-hidden="true">↳ ведёт к п. 3</span>
+                        <h3>3. Основные действия для&nbsp;их&nbsp;использования</h3>
+                      </div>
+                      <ul class="fw-dl">
+                        <li><b>Ценностное предложение:</b> за&nbsp;счёт чего создаём ценность и&nbsp;прибыль</li>
+                        <li><b>Бизнес-модель:</b> фокус на&nbsp;маркетинг, продукт или операционную эффективность</li>
+                      </ul>
+                    </div>
+                    <div class="fw-subcard">
+                      <h3>4. Основные риски и&nbsp;ответные действия</h3>
+                      <ul class="fw-dl">
+                        <li>Может реализовываться в&nbsp;рамках <b>комитета по&nbsp;управлению рисками</b> (карта рисков 3×3)</li>
+                        <li>Формируется как <b>для текущего положения</b>, так и&nbsp;<b>для плана развития</b></li>
+                      </ul>
+                    </div>
+                    <div class="fw-subcard">
+                      <h3>5. Необходимые доп. ресурсы</h3>
+                      <ul class="fw-dl">
+                        <li><b>Финансовые</b> (инвестиции и&nbsp;бюджеты)</li>
+                        <li><b>Трудовые</b> (сотрудники, компетенции)</li>
+                        <li><b>Технологические</b> (инфраструктура и&nbsp;ИТ)</li>
+                        <li><b>Факторы внешней среды</b> (политика, экономика, общество)</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="fw-nav-row">
+                <button type="button" class="bt sm fw-nav-btn" data-fw-jump="1"><span aria-hidden="true">←</span> Фаза 02: Инструменты и сессия</button>
+                <span></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="fw-slide-view" id="fw-slide-view" hidden>
+            <div class="fw-slide-bar">
+              <span class="lb">Схема стратегической аналитики на одном слайде</span>
+              <a class="bt sm" href="images/sts_strategy_analytics_framework.png" download="Фреймворк стратегической аналитики Sparkle.png">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M8 3v8M5 8l3 3 3-3M3 13h10"/>
+                </svg>
+                Скачать PNG
+              </a>
+            </div>
+            <figure class="fw-slide-frame" id="fw-slide-frame" role="button" tabindex="0" aria-label="Открыть схему в интерактивном просмотре с увеличением">
+              <img src="images/sts_strategy_analytics_framework.png" alt="Фреймворк стратегической аналитики на одном слайде: цели, инструменты диагностики и 5 итоговых результатов" loading="lazy">
+            </figure>
+          </div>
+
+          <dialog id="fw-slide-dlg" class="fw-slide-dlg" closedby="any" aria-label="Фреймворк стратегической аналитики — интерактивный просмотр">
+            <div class="fw-slide-dlg-hd">
+              <span>Фреймворк стратегической аналитики</span>
+              <div class="u-row-wrap-8">
+                <span class="fw-zoom-pct" id="fw-zoom-pct">100%</span>
+                <button type="button" class="bt sm" id="fw-zoom-reset">Сбросить</button>
+                <a class="bt sm" href="images/sts_strategy_analytics_framework.png" download="Фреймворк стратегической аналитики Sparkle.png">Скачать PNG</a>
+                <button type="button" class="bt sm" id="fw-slide-dlg-close">Закрыть</button>
+              </div>
+            </div>
+            <div class="fw-slide-dlg-body" id="fw-slide-viewport">
+              <img id="fw-slide-img" src="images/sts_strategy_analytics_framework.png" alt="Фреймворк стратегической аналитики на одном слайде" draggable="false">
+            </div>
+          </dialog>
+        </section>
+
+        <!-- ==================== ANALYTICS ==================== -->
+        <section data-v="analytics" data-s="i">
+          <div class="hd">
+            <h1 tabindex="-1">Подготовка <span class="hl">аналитики</span></h1>
+            <div class="seg an-storage-seg" role="group" aria-label="Режим хранения данных аналитики">
+              <button type="button" data-an-storage="ram" aria-pressed="true" title="Хранить только в оперативной памяти (RAM) до закрытия вкладки">RAM</button>
+              <button type="button" data-an-storage="disk" aria-pressed="false" title="Сохранять рассчитанный набор локально в IndexedDB браузера">Disk</button>
+            </div>
+          </div>
+
+          <div class="an-grid">
+            <!-- Left column: Upload, Progress, Ready, Demo Samples & Spec -->
+            <div class="an-left">
+              <!-- Idle Dropzone -->
+              <div class="pc an-dz" data-for="i" id="dz">
+                <span class="ic" aria-hidden="true">
+                  <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M8 11V3M5 6l3-3 3 3M3 13h10"/>
+                  </svg>
+                </span>
+                <div class="an-dz-copy">
+                  <button class="bt p" id="pick" type="button"><span>Выбрать Excel-файл</span></button>
+                  <span class="an-dz-meta">или перетащите .xlsx, до 200&nbsp;МБ</span>
+                </div>
+                <label class="sr-only" for="fl">Выберите Excel-файл (.xlsx)</label>
+                <input type="file" id="fl" accept=".xlsx" hidden>
+                <div class="an-err" id="an-err" role="alert" hidden>
+                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="8" cy="8" r="6.5"/><path d="M8 4.8v3.6M8 11.2h.01"/>
+                  </svg>
+                  <span id="an-err-text"></span>
+                </div>
+              </div>
+
+              <!-- Processing Progress -->
+              <div class="pc an-prog-card" data-for="r" hidden>
+                <div class="an-prog-head">
+                  <label for="an-prog" id="an-prog-lbl">Выполняем расчёт…</label>
+                  <span class="an-prog-pct" id="an-prog-pct">0%</span>
+                </div>
+                <progress class="trk-native" id="an-prog" max="100" value="0"></progress>
+                <ul class="stg">
+                  <li>Инициализация ядра <span lang="en">WebAssembly</span></li>
+                  <li>Чтение <span lang="en">.xlsx</span> в&nbsp;памяти (<span lang="en">calamine</span>)</li>
+                  <li>Расчёт <span lang="en">VMPC-INO</span>, маржи, сезонности и&nbsp;эластичности</li>
+                </ul>
+              </div>
+
+              <!-- Ready State -->
+              <div class="pc an-done-card" data-for="d" hidden>
+                <div class="an-done-head">
+                  <span class="an-done-ic" aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M3.5 8.5 6.5 11.5 12.5 4.5"/>
+                    </svg>
+                  </span>
+                  <div>
+                    <h2 class="an-done-title">Данные готовы для&nbsp;дашборда</h2>
+                    <p class="an-done-meta" id="loaded-file-info"></p>
+                  </div>
+                </div>
+                <div class="u-row-wrap-8 an-done-actions">
+                  <a class="bt p" href="#dashboard">Открыть дашборд <span aria-hidden="true">→</span></a>
+                  <button class="bt" id="again" type="button">Загрузить другой файл</button>
+                  <button class="lk an-clear-link" id="an-clear-data" type="button">Удалить файл и&nbsp;данные</button>
+                </div>
+              </div>
+
+              <!-- Demo Datasets -->
+              <div class="an-samples">
+                <div class="an-sec-head">
+                  <span class="lb">Готовые примеры</span>
+                </div>
+                <div class="an-sample-grid">
+                  <button class="an-sample-card" data-ex="0" type="button" aria-pressed="false">
+                    <div class="an-sample-top">
+                      <b>Пример 1 · Обезличенный</b>
+                      <span class="an-sample-badge" data-an-badge="0" hidden>В дашборде</span>
+                    </div>
+                    <span class="an-sample-meta">10&nbsp;000 строк · По&nbsp;умолчанию</span>
+                  </button>
+                  <button class="an-sample-card" data-ex="1" type="button" aria-pressed="false">
+                    <div class="an-sample-top">
+                      <b>Пример 2 · Продукты</b>
+                      <span class="an-sample-badge" data-an-badge="1" hidden>В дашборде</span>
+                    </div>
+                    <span class="an-sample-meta">120 строк</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Format Specification & Template -->
+              <details class="an-spec">
+                <summary><span>Формат файла и&nbsp;шаблон (<span lang="en">.xlsx</span>)</span></summary>
+                <div class="an-spec-body">
+                  <div class="an-spec-legend">
+                    <span><b class="an-star-req">*</b> Обязательные поля (базовый расчёт)</span>
+                    <span><b class="an-star-rec">*</b> Рекомендуемые (открывают больше графиков)</span>
+                  </div>
+                  <ul class="an-spec-matrix">
+                    <li>
+                      <b>База (<span class="an-star-req">*</span>):</b> Год (2+), Категория, Товар, Продажи (руб), Затраты (руб)
+                      <span class="an-spec-unlock">→ Динамика прибыли, Карта маржинальности SKU, годовые KPI</span>
+                    </li>
+                    <li>
+                      <b>+ Месяц (<span class="an-star-rec">*</span>):</b>
+                      <span class="an-spec-unlock">→ Помесячная динамика продаж/маржи и сезонность продаж</span>
+                    </li>
+                    <li>
+                      <b>+ Объем продаж (шт) (<span class="an-star-rec">*</span>):</b>
+                      <span class="an-spec-unlock">→ Полный VMPC-INO (Объём/Цена/Микс), сезонность цен, эластичность спроса</span>
+                    </li>
+                    <li>
+                      <b>+ Инфляция категории (<span class="an-star-rec">*</span>):</b>
+                      <span class="an-spec-unlock">→ Отдельный фактор инфляции в VMPC-INO (иначе 0%)</span>
+                    </li>
+                  </ul>
+                  <p class="an-spec-note">Цена/себестоимость за&nbsp;шт и&nbsp;суммы в&nbsp;рублях взаимозаменяемы (Wasm выводит недостающее через шт).</p>
+                  <div class="an-spec-actions">
+                    <a class="bt sm" href="assets/samples/upload_example.xlsx?v=3.33.0" download="Шаблон для загрузки.xlsx">
+                      <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M8 3v8M5 8l3 3 3-3M3 13h10"/>
+                      </svg>
+                      Скачать шаблон (.xlsx)
+                    </a>
+                  </div>
+                </div>
+              </details>
+            </div>
+
+            <!-- Right column: Live Dashboard Readiness Summary + Collapsed Use Cases -->
+            <div class="an-right">
+              <aside class="pc an-summary" aria-label="Сводка набора данных для дашборда">
+                <div class="an-sum-head">
+                  <div>
+                    <span class="lb">Синхронизация с&nbsp;дашбордом</span>
+                    <h2 class="an-sum-title" id="an-sum-title">Набор ещё не&nbsp;рассчитан</h2>
+                  </div>
+                </div>
+
+                <div class="an-kpi-rows">
+                  <dl class="an-kpi-grid an-kpi-row-2">
+                    <div class="an-kpi">
+                      <dt>Период</dt>
+                      <dd id="an-kpi-period">—</dd>
+                    </div>
+                    <div class="an-kpi">
+                      <dt>Категории · <span lang="en">SKU</span></dt>
+                      <dd id="an-kpi-scope">—</dd>
+                    </div>
+                  </dl>
+
+                  <dl class="an-kpi-grid an-kpi-row-3">
+                    <div class="an-kpi">
+                      <dt>Изм. прибыли</dt>
+                      <dd id="an-kpi-delta">—</dd>
+                    </div>
+                    <div class="an-kpi">
+                      <dt>Изм. выручки</dt>
+                      <dd id="an-kpi-rev-delta">—</dd>
+                    </div>
+                    <div class="an-kpi">
+                      <dt>Изм. расходов</dt>
+                      <dd id="an-kpi-cost-delta">—</dd>
+                    </div>
+                  </dl>
+                </div>
+
+                <div class="an-mods">
+                  <span class="lb">Готовность блоков дашборда</span>
+                  <ul class="an-mod-list" id="an-mod-list">
+                    <li data-mod="vmpc"><span class="an-mod-ic" aria-hidden="true">○</span><span>Факторный анализ прибыли (<span lang="en">VMPC-INO</span>)</span></li>
+                    <li data-mod="bars"><span class="an-mod-ic" aria-hidden="true">○</span><span>Динамика прибыли и&nbsp;продаж по&nbsp;категориям</span></li>
+                    <li data-mod="marg"><span class="an-mod-ic" aria-hidden="true">○</span><span>Карта маржинальности <span lang="en">SKU</span></span></li>
+                    <li data-mod="seas"><span class="an-mod-ic" aria-hidden="true">○</span><span>Сезонность и&nbsp;эластичность спроса</span></li>
+                  </ul>
+                </div>
+
+                <div class="an-sum-foot">
+                  <div class="an-sum-cta">
+                    <a class="bt p" id="an-go-dash" href="#dashboard"><span>Открыть дашборд</span><span aria-hidden="true">→</span></a>
+                    <span class="an-status-pill" id="an-active-pill" role="status" tabindex="0">
+                      <span class="an-status-dot" aria-hidden="true"></span>
+                      <span id="an-active-pill-text">В дашборде: нет данных</span>
+                    </span>
+                  </div>
+                  <div class="an-status-pop" id="an-status-pop" popover="manual" role="tooltip"></div>
+                  <a class="an-pptx-link" href="assets/samples/download_template.pptx" download="Шаблон презентации Sparkle.pptx">
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M8 3v8M5 8l3 3 3-3M3 13h10"/>
+                    </svg>
+                    Шаблон .pptx
+                  </a>
+                </div>
+              </aside>
+
+              <details class="an-spec an-about">
+                <summary>О&nbsp;модуле и&nbsp;сценариях применения</summary>
+                <div class="an-spec-body">
+                  <div class="an-about-grp">
+                    <span class="lb">Преимущества</span>
+                    <ul class="an-about-list">
+                      <li><b>Дешевле и&nbsp;быстрее</b> ручного сбора отчётов или найма внешних консультантов</li>
+                      <li><b>Мгновенный результат</b>, сразу готовый для&nbsp;стратегических встреч</li>
+                    </ul>
+                  </div>
+                  <div class="an-about-grp">
+                    <span class="lb">Кому подойдёт</span>
+                    <ul class="an-about-list">
+                      <li><b>Малый бизнес</b> — быстро разобраться в&nbsp;прибыльности ассортимента без&nbsp;штатного аналитика и&nbsp;интеграции&nbsp;BI</li>
+                      <li><b>Средний и&nbsp;крупный бизнес</b> — сэкономить время аналитиков на&nbsp;внутренние задачи и&nbsp;получить независимый срез перед стратсессией</li>
+                    </ul>
+                  </div>
+                </div>
+              </details>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== DASHBOARD ==================== -->
+        <section data-v="dashboard">
+          <div class="hd">
+            <h1 tabindex="-1">Дашборд <span class="hl">компании</span></h1>
+            <span class="core" id="core" hidden>Ядро: загрузка…</span>
+          </div>
+
+          <!-- BI Interactive Filters & Actions Toolbar -->
+          <div class="bi-bar" role="toolbar" focusgroup="toolbar wrap" aria-label="Инструменты управления BI-визуализациями">
+            <div class="bi-group">
+              <div class="bi-filter-wrap">
+                <button class="bt sm bi-filter-btn bi-ds-trigger" id="bi-dataset-trigger" type="button" popovertarget="bi-dataset-pop">
+                  <span>Данные</span>
+                  <span class="bi-filter-cnt" id="bi-dataset-label">Пример 1</span>
+                </button>
+              </div>
+              <div class="bi-pop bi-ds-pop" id="bi-dataset-pop" popover="auto" aria-label="Выбор набора данных дашборда">
+                <div class="bi-pop-hd">
+                  <b>Набор данных</b>
+                </div>
+                <div class="bi-ds-list" id="bi-dataset-list" role="listbox" aria-label="Доступные наборы данных"></div>
+              </div>
+              <div class="wf-tip bi-ds-reason-tip" id="bi-dataset-reason-tip" popover="manual" role="tooltip" hidden></div>
+            </div>
+
+            <div class="bi-group">
+              <div class="bi-filter-wrap">
+                <button class="bt sm bi-filter-btn" id="bi-year-btn" type="button" popovertarget="bi-year-pop">
+                  <span>Годы</span>
+                  <span class="bi-filter-cnt" id="bi-year-cnt">Все</span>
+                </button>
+                <button class="bi-filter-clear" id="bi-year-clear" type="button" hidden aria-label="Снять фильтр годов" title="Снять фильтр годов">×</button>
+              </div>
+              <div class="bi-pop" id="bi-year-pop" popover="auto" aria-label="Фильтр годов">
+                <div class="bi-pop-hd">
+                  <b>Годы</b>
+                  <div class="bi-pop-acts">
+                    <button type="button" class="lk" id="bi-year-all">Выбрать все</button>
+                    <button type="button" class="lk" id="bi-year-none">Снять все</button>
+                  </div>
+                </div>
+                <div class="bi-pop-list" id="bi-year-list"></div>
+              </div>
+            </div>
+
+            <div class="bi-group">
+              <div class="bi-filter-wrap">
+                <button class="bt sm bi-filter-btn" id="bi-cat-btn" type="button" popovertarget="bi-cat-pop">
+                  <span>Категории</span>
+                  <span class="bi-filter-cnt" id="bi-cat-cnt">Все</span>
+                </button>
+                <button class="bi-filter-clear" id="bi-cat-clear" type="button" hidden aria-label="Снять фильтр категорий" title="Снять фильтр категорий">×</button>
+              </div>
+              <div class="bi-pop" id="bi-cat-pop" popover="auto" aria-label="Фильтр категорий">
+                <div class="bi-pop-hd">
+                  <b>Категории</b>
+                  <div class="bi-pop-acts">
+                    <button type="button" class="lk" id="bi-cat-all">Выбрать все</button>
+                    <button type="button" class="lk" id="bi-cat-none">Снять все</button>
+                  </div>
+                </div>
+                <div class="bi-pop-list" id="bi-cat-list"></div>
+              </div>
+              <select class="sr-only" id="bi-cat" aria-hidden="true" tabindex="-1">
+                <option value="all">Все категории</option>
+              </select>
+            </div>
+
+            <div class="bi-group">
+              <div class="bi-filter-wrap">
+                <button class="bt sm bi-filter-btn" id="bi-sku-btn" type="button" popovertarget="bi-sku-pop">
+                  <span>SKU</span>
+                  <span class="bi-filter-cnt" id="bi-sku-cnt">Все</span>
+                </button>
+                <button class="bi-filter-clear" id="bi-sku-clear" type="button" hidden aria-label="Снять фильтр SKU" title="Снять фильтр SKU">×</button>
+              </div>
+              <div class="bi-pop" id="bi-sku-pop" popover="auto" aria-label="Фильтр товаров SKU">
+                <div class="bi-pop-hd">
+                  <b>Товары (SKU)</b>
+                  <div class="bi-pop-acts">
+                    <button type="button" class="lk" id="bi-sku-all">Выбрать все</button>
+                    <button type="button" class="lk" id="bi-sku-none">Снять все</button>
+                  </div>
+                </div>
+                <input type="search" class="st-input bi-pop-search" id="bi-sku-search" placeholder="Поиск SKU…">
+                <div class="bi-pop-list" id="bi-sku-list"></div>
+              </div>
+            </div>
+
+            <div class="seg seg-xs" role="group" aria-label="Шкала значений">
+              <button type="button" data-bi-scale="auto" aria-pressed="true" title="Автоматическая шкала (млн / тыс)">Авто</button>
+              <button type="button" data-bi-scale="rub" aria-pressed="false" title="Точные значения в рублях">₽</button>
+            </div>
+
+            <span class="bi-sep" role="separator" aria-orientation="vertical"></span>
+
+            <div class="bi-toggles">
+              <button class="bt sm bi-toggle-btn" id="bi-rev-bg" type="button" aria-pressed="true" title="Показать штрихованный фоновый столбец выручки на графиках прибыли">
+                <span class="bi-hatch-swatch" aria-hidden="true"></span>
+                <span>Фон выручки</span>
+              </button>
+              <button class="bt sm bi-toggle-btn" id="bi-labels-toggle" type="button" aria-pressed="true" title="Показать или скрыть подписи значений на графиках">
+                <span>Подписи</span>
+              </button>
+            </div>
+
+            <div class="bi-actions">
+              <button class="bt sm" id="bi-reset" type="button">Сброс</button>
+              <button class="bt sm bi-export-btn" id="bi-export-csv" type="button" title="Скачать данные дашборда в CSV (для Excel)">
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M8 2.5v7.5m0 0-3-3m3 3 3-3"/>
+                  <path d="M2.5 11.5v1.5a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-1.5"/>
+                </svg>
+                <span>CSV</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Top-level Executive KPI Strip (Synced with Category Filter) -->
+          <dl class="dash-kpi-strip" id="dash-kpi-strip" aria-label="Ключевые показатели за последний период">
+            <div class="dash-kpi-card">
+              <dt>Выручка <span class="dash-kpi-yr" id="dk-yr-1"></span></dt>
+              <div class="dash-kpi-row">
+                <dd class="dash-kpi-val" id="dk-rev">—</dd>
+                <dd class="dash-kpi-delta" id="dk-rev-d">—</dd>
+              </div>
+            </div>
+            <div class="dash-kpi-card">
+              <dt>Затраты <span class="dash-kpi-yr" id="dk-yr-2"></span></dt>
+              <div class="dash-kpi-row">
+                <dd class="dash-kpi-val" id="dk-cost">—</dd>
+                <dd class="dash-kpi-delta" id="dk-cost-d">—</dd>
+              </div>
+            </div>
+            <div class="dash-kpi-card">
+              <dt>Валовая прибыль <span class="dash-kpi-yr" id="dk-yr-3"></span></dt>
+              <div class="dash-kpi-row">
+                <dd class="dash-kpi-val" id="dk-prof">—</dd>
+                <dd class="dash-kpi-delta" id="dk-prof-d">—</dd>
+              </div>
+            </div>
+            <div class="dash-kpi-card">
+              <dt>Маржинальность <span class="dash-kpi-yr" id="dk-yr-4"></span></dt>
+              <div class="dash-kpi-row">
+                <dd class="dash-kpi-val" id="dk-marg">—</dd>
+                <dd class="dash-kpi-delta" id="dk-marg-d">—</dd>
+              </div>
+            </div>
+          </dl>
+
+          <div class="tabs" role="tablist" focusgroup="tablist nomemory" id="tabs" aria-label="Разделы дашборда">
+            <button role="tab" type="button" id="tab0" aria-selected="true" focusgroupstart tabindex="0" data-t="0">1. Прибыль и факторы</button>
+            <button role="tab" type="button" id="tab1" aria-selected="false" tabindex="-1" data-t="1">2. Товары и динамика</button>
+            <button role="tab" type="button" id="tab2" aria-selected="false" tabindex="-1" data-t="2">3. Сезонность и цены</button>
+          </div>
+
+          <!-- Вкладка 1: Итоги и факторы -->
+          <div data-tp="0" role="tabpanel" id="tp0" aria-labelledby="tab0" tabindex="0">
+            <div class="tp-inner">
+              <div class="chs">
+                <div class="chart-box">
+                  <div class="chart-hd">
+                    <div>
+                      <h2>Факторный анализ прибыли (<span lang="en">VMPC-INO</span>)</h2>
+                      <small id="vmpc-years-lbl">Клик по столбцу раскрывает детали</small>
+                    </div>
+                  </div>
+                  <div id="ch1"></div>
+                </div>
+                <div class="chart-box">
+                  <div class="chart-hd">
+                    <div>
+                      <h2 id="ch2-title">Прибыль по категориям и&nbsp;годам</h2>
+                      <small id="bars-years-lbl">Клик открывает таблицу по категориям</small>
+                    </div>
+                    <div class="seg seg-xs" role="group" aria-label="Метрика графика категорий">
+                      <button type="button" data-ch2-metric="profit" aria-pressed="true">Прибыль</button>
+                      <button type="button" data-ch2-metric="revenue" aria-pressed="false">Выручка</button>
+                    </div>
+                  </div>
+                  <div id="ch2"></div>
+                </div>
+              </div>
+
+              <details class="u-mt12">
+                <summary>Как читать факторы <span lang="en">VMPC-INO</span> простыми словами</summary>
+                <div class="df acc-grid">
+                  <p><b>Прибыль</b> — сколько денег осталось у бизнеса после вычета всех затрат за год</p>
+                  <p><b>Объём (шт)</b> — продали больше или меньше штук товара, чем в прошлом году</p>
+                  <p><b>Микс</b> — покупатели стали чаще выбирать более дорогие или более дешёвые товары</p>
+                  <p><b>Инфляция</b> — прибыль выросла просто потому, что цены выросли по всему рынку</p>
+                  <p><b>Цена</b> — мы сами подняли или снизили цены сильнее обычной инфляции</p>
+                  <p><b>Затраты</b> — изменилась стоимость закупки, производства или доставки</p>
+                  <p><b>Новинки</b> — прибыль от новых товаров, которых не было в прошлом году</p>
+                  <p><b>Выводы товаров</b> — упущенная прибыль от товаров, которые перестали продавать</p>
+                </div>
+              </details>
+            </div>
+          </div>
+
+          <!-- Вкладка 2: Матрица SKU и динамика -->
+          <div data-tp="1" role="tabpanel" id="tp1" aria-labelledby="tab1" hidden="until-found">
+            <div class="tp-inner">
+              <div class="chs">
+                <div class="chart-box">
+                  <div class="chart-hd">
+                    <div>
+                      <h2>Карта маржинальности <span lang="en">SKU</span></h2>
+                      <small id="marg-year-lbl">Клик по точке раскрывает карточку товара</small>
+                    </div>
+                    <div class="bi-filter-wrap">
+                      <select class="st-select st-select-xs" id="bi-quad-filter" aria-label="Фильтр по группе товаров">
+                        <option value="all">Все группы</option>
+                        <option value="Топ товары">Звёзды</option>
+                        <option value="Рассмотреть пути повышения маржинальности">Повысить маржу</option>
+                        <option value="Рассмотреть пути повышения продаж">Растить продажи</option>
+                        <option value="Отстающие товары">Отстающие</option>
+                      </select>
+                      <button class="bi-filter-clear" id="bi-quad-clear" type="button" hidden aria-label="Снять фильтр группы" title="Снять фильтр группы">×</button>
+                    </div>
+                  </div>
+                  <div id="chart-marg-map" class="plotly-host"></div>
+                </div>
+                <div class="chart-box">
+                  <div class="chart-hd">
+                    <div>
+                      <h2>Помесячная динамика</h2>
+                      <small id="ts-sub-lbl">Выручка и маржинальность по месяцам</small>
+                    </div>
+                    <div class="bi-chart-ctrls">
+                      <div class="seg seg-xs" role="group" aria-label="Группировка временных рядов">
+                        <button type="button" data-ts-agg="sku" aria-pressed="true">SKU</button>
+                        <button type="button" data-ts-agg="cat" aria-pressed="false">Категории</button>
+                      </div>
+                      <div class="seg seg-xs" role="group" aria-label="Отображаемые графики динамики">
+                        <button type="button" data-ts-view="both" aria-pressed="true">Оба</button>
+                        <button type="button" data-ts-view="sales" aria-pressed="false">Продажи</button>
+                        <button type="button" data-ts-view="margin" aria-pressed="false">Маржа</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="chart-sales-change" class="plotly-host"></div>
+                  <div id="chart-marg-change" class="plotly-host"></div>
+                </div>
+              </div>
+
+              <!-- Панель AI-анализа матрицы (Облачный API или Локальный WebGPU) -->
+              <div class="ai-dash-card">
+                <div class="ai-dash-head">
+                  <div class="u-row-wrap-8">
+                    <button class="bt p sm" id="btn-ai-analyze-marg" type="button">Сгенерировать через AI</button>
+                    <fieldset class="seg-ctrl seg-ctrl-sm">
+                      <legend class="sr-only">Режим генерации выводов</legend>
+                      <label class="seg-opt">
+                        <input type="radio" name="dash-ai-mode" value="local-ai" checked>
+                        <span>Локально (<span lang="en">WebGPU</span>)</span>
+                      </label>
+                      <label class="seg-opt">
+                        <input type="radio" name="dash-ai-mode" value="api">
+                        <span><span lang="en">API</span> (облако)</span>
+                      </label>
+                    </fieldset>
+                  </div>
+
+                  <div class="u-row-wrap-8">
+                    <span class="api-pill" id="dash-ai-pill">ProxyAPI · OpenAI API</span>
+                    <button class="bt sm" type="button" id="dash-ai-settings-btn" aria-expanded="false">Настройка API</button>
+                  </div>
+                </div>
+
+                <div class="rgm-sub-pane local-ai-panel" id="dash-local-ai-panel" hidden>
+                  <div class="local-settings-cols">
+                    <div class="local-col-left">
+                      <div class="local-model-cols-hint" aria-hidden="true"><span>Модель</span><span>Качество</span><span>Видеопамять</span></div>
+                      <div class="local-model-bar">
+                        <label class="sr-only" for="dash-local-model-select">Локальная модель (WebGPU)</label>
+                        <select class="st-select local-model-select" id="dash-local-model-select" name="dashLocalModel">
+                          <option value="qwen3-0.6b">Qwen3 0.6B (~450 МБ · смартфоны / лёгкая)</option>
+                          <option value="qwen3-1.7b">Qwen3 1.7B (~1,1 ГБ · быстрая)</option>
+                          <option value="qwen3-4b" selected>Qwen3 4B (~2,5 ГБ · баланс)</option>
+                          <option value="qwen3-8b">Qwen3 8B (~4,8 ГБ · макс. точность, GPU ≥ 8 ГБ)</option>
+                        </select>
+                        <button class="bt sm icon-plus-btn" id="btn-dash-mirror-toggle" type="button" aria-expanded="false" aria-controls="dash-local-mirror-wrap" aria-label="Указать своё зеркало весов" title="Указать своё зеркало весов (по умолчанию Hugging Face CDN)">+</button>
+                      </div>
+                      <div class="local-mirror-wrap" id="dash-local-mirror-wrap" hidden>
+                        <label class="sr-only" for="dash-local-mirror-url">Зеркало весов</label>
+                        <input id="dash-local-mirror-url" class="st-input" type="url" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="По умолчанию Hugging Face CDN">
+                      </div>
+                      <ul class="local-specs-list" id="dash-local-model-diff"></ul>
+                    </div>
+
+                    <div class="local-col-right">
+                      <label class="sw-label" for="dash-local-cache-switch">
+                        <input id="dash-local-cache-switch" type="checkbox" switch>
+                        <span>Кэш в браузере</span>
+                      </label>
+                      <div class="local-cache-actions">
+                        <span class="api-pill" id="dash-local-cache-status">Выкл</span>
+                        <button class="lk" id="btn-clear-dash-cache" type="button">Очистить</button>
+                      </div>
+                      <div class="cache-policy-box" id="dash-local-cache-hint">
+                        <span class="cache-policy-k">Автоочистка</span>
+                        <span class="cache-policy-v">При закрытии или отмене</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="dash-local-progress-box" hidden>
+                  <progress class="trk-native" id="dash-local-prog" max="100" value="0"></progress>
+                  <div class="u-row-between">
+                    <span id="dash-local-status">Подготовка WebGPU…</span>
+                    <button class="bt sm" id="btn-cancel-dash-local" type="button">Отменить</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="ai-card" id="ai-insight-card" hidden>
+                <div class="u-row-between">
+                  <h3 class="u-m0">Выводы по товарной матрице</h3>
+                </div>
+                <div class="ai-card-body" id="ai-insight-body"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Вкладка 3: Сезонность и цены -->
+          <div data-tp="2" role="tabpanel" id="tp2" aria-labelledby="tab2" hidden="until-found">
+            <div class="tp-inner">
+              <div class="chs">
+                <div class="chart-box">
+                  <div class="chart-hd">
+                    <div class="bi-title-with-help">
+                      <div>
+                        <div class="bi-h2-row">
+                          <h2>Карта сезонности</h2>
+                          <span class="bi-period-tag" id="seas-period-lbl"></span>
+                          <button type="button" class="bi-help-btn" id="seas-help-btn" popovertarget="seas-help-pop" aria-label="Как считается индекс сезонности" title="Как считается индекс сезонности">?</button>
+                        </div>
+                      </div>
+                      <div class="bi-pop bi-help-pop" id="seas-help-pop" popover="auto" aria-label="Как считается индекс сезонности">
+                        <div class="bi-pop-hd"><b>Как читается индекс сезонности</b></div>
+                        <p class="bi-help-p">Индекс показывает, во сколько раз показатель SKU в конкретном месяце отличается от его среднегодового уровня (усреднено по всем годам):</p>
+                        <ul class="bi-help-list">
+                          <li><b>Продажи:</b> шт. в месяце ÷ среднемесячные шт. года. <b>1.00</b> — норма, <b>&gt; 1.00</b> (зелёный) — высокий сезон, <b>&lt; 1.00</b> (коралловый) — спад спроса.</li>
+                          <li><b>Цены:</b> средняя цена месяца ÷ среднегодовая цена SKU. <b>1.00</b> — базовая цена, <b>&gt; 1.00</b> (янтарный) — наценка, <b>&lt; 1.00</b> (синий) — промо/скидки.</li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="seg seg-xs" role="group" aria-label="Срез карты сезонности">
+                      <button type="button" data-seas-view="both" aria-pressed="true">Обе</button>
+                      <button type="button" data-seas-view="sales" aria-pressed="false">Продажи</button>
+                      <button type="button" data-seas-view="prices" aria-pressed="false">Цены</button>
+                    </div>
+                  </div>
+                  <div id="seas-sales-wrap">
+                    <div class="bi-subchart-lbl">Продажи</div>
+                    <div id="chart-sales-heat" class="plotly-host"></div>
+                  </div>
+                  <div id="seas-prices-wrap">
+                    <div class="bi-subchart-lbl">Цены</div>
+                    <div id="chart-prices-heat" class="plotly-host"></div>
+                  </div>
+                </div>
+                <div class="chart-box">
+                  <div class="chart-hd">
+                    <div class="bi-title-with-help">
+                      <div>
+                        <div class="bi-h2-row">
+                          <h2>Эластичность спроса по&nbsp;цене</h2>
+                          <span class="bi-period-tag" id="elast-period-lbl"></span>
+                          <button type="button" class="bi-help-btn" id="elast-help-btn" popovertarget="elast-help-pop" aria-label="Как читать график эластичности и коэффициент E" title="Как читать график эластичности и коэффициент E">?</button>
+                        </div>
+                      </div>
+                      <div class="bi-pop bi-help-pop bi-help-pop-wide" id="elast-help-pop" popover="auto" aria-label="Справка по эластичности спроса">
+                        <div class="bi-pop-hd"><b>Как читать эластичность (E)</b></div>
+                        <p class="bi-help-p"><b>E</b> показывает, на сколько % меняются продажи (в штуках), если поднять цену на 1%:</p>
+                        <div class="elast-guide-grid" role="list" aria-label="Четыре случая ценовой эластичности спроса">
+                          <div class="elast-card" role="listitem">
+                            <div class="elast-card-hd is-red">E &lt; −1 · Сильная реакция</div>
+                            <svg class="elast-mini-svg" viewBox="0 0 180 54" aria-hidden="true">
+                              <line x1="20" y1="44" x2="172" y2="44" stroke="currentColor" stroke-opacity="0.28" stroke-width="1"/>
+                              <line x1="20" y1="44" x2="20" y2="6" stroke="currentColor" stroke-opacity="0.28" stroke-width="1"/>
+                              <line x1="32" y1="10" x2="102" y2="40" stroke="#D9534F" stroke-width="2.4" stroke-linecap="round"/>
+                              <text x="11" y="26" font-size="8.5" fill="currentColor" fill-opacity="0.55" transform="rotate(-90 11 26)" text-anchor="middle">Шт</text>
+                              <text x="168" y="40" font-size="8.5" fill="currentColor" fill-opacity="0.55" text-anchor="end">Цена →</text>
+                            </svg>
+                            <p class="elast-card-p">Покупатели быстро отказываются от товара при росте цены. Повышать цену невыгодно — лучше работают скидки и акции.</p>
+                          </div>
+
+                          <div class="elast-card" role="listitem">
+                            <div class="elast-card-hd is-green">−1 &lt; E &lt; 0 · Устойчивый спрос</div>
+                            <svg class="elast-mini-svg" viewBox="0 0 180 54" aria-hidden="true">
+                              <line x1="20" y1="44" x2="172" y2="44" stroke="currentColor" stroke-opacity="0.28" stroke-width="1"/>
+                              <line x1="20" y1="44" x2="20" y2="6" stroke="currentColor" stroke-opacity="0.28" stroke-width="1"/>
+                              <line x1="30" y1="16" x2="158" y2="30" stroke="#15803D" stroke-width="2.4" stroke-linecap="round"/>
+                              <text x="11" y="26" font-size="8.5" fill="currentColor" fill-opacity="0.55" transform="rotate(-90 11 26)" text-anchor="middle">Шт</text>
+                              <text x="168" y="40" font-size="8.5" fill="currentColor" fill-opacity="0.55" text-anchor="end">Цена →</text>
+                            </svg>
+                            <p class="elast-card-p">Товар продолжают покупать даже дороже. Есть запас для плавного повышения цены и роста прибыли без заметной потери объёма.</p>
+                          </div>
+
+                          <div class="elast-card" role="listitem">
+                            <div class="elast-card-hd is-muted">E ≈ 0 · Цена почти не влияет</div>
+                            <svg class="elast-mini-svg" viewBox="0 0 180 54" aria-hidden="true">
+                              <line x1="20" y1="44" x2="172" y2="44" stroke="currentColor" stroke-opacity="0.28" stroke-width="1"/>
+                              <line x1="20" y1="44" x2="20" y2="6" stroke="currentColor" stroke-opacity="0.28" stroke-width="1"/>
+                              <line x1="30" y1="24" x2="158" y2="24" stroke="#64748B" stroke-width="2.2" stroke-dasharray="5 4"/>
+                              <text x="11" y="26" font-size="8.5" fill="currentColor" fill-opacity="0.55" transform="rotate(-90 11 26)" text-anchor="middle">Шт</text>
+                              <text x="168" y="40" font-size="8.5" fill="currentColor" fill-opacity="0.55" text-anchor="end">Цена →</text>
+                            </svg>
+                            <p class="elast-card-p">Продажи слабо зависят от цены. Основное влияние оказывают сезонность, наличие товара и общий поток покупателей.</p>
+                          </div>
+
+                          <div class="elast-card" role="listitem">
+                            <div class="elast-card-hd is-amber">E &gt; 0 · Нетипичный рост</div>
+                            <svg class="elast-mini-svg" viewBox="0 0 180 54" aria-hidden="true">
+                              <line x1="20" y1="44" x2="172" y2="44" stroke="currentColor" stroke-opacity="0.28" stroke-width="1"/>
+                              <line x1="20" y1="44" x2="20" y2="6" stroke="currentColor" stroke-opacity="0.28" stroke-width="1"/>
+                              <line x1="30" y1="38" x2="158" y2="12" stroke="#D97706" stroke-width="2.4" stroke-linecap="round"/>
+                              <text x="11" y="26" font-size="8.5" fill="currentColor" fill-opacity="0.55" transform="rotate(-90 11 26)" text-anchor="middle">Шт</text>
+                              <text x="168" y="40" font-size="8.5" fill="currentColor" fill-opacity="0.55" text-anchor="end">Цена →</text>
+                            </svg>
+                            <p class="elast-card-p">Объём продаж рос одновременно с ценой. Обычно это связано с высоким сезоном, дефицитом или сменой позиционирования.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="chart-elasticity" class="plotly-host"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Shared Dashboard Drill-Down Overlays (accessible from all 3 tabs) -->
+          <div class="drill-overlay" id="wf-drill" hidden role="region" aria-live="polite" aria-label="Детализация фактора">
+            <div class="drill-card">
+              <div class="drill-hd">
+                <h3 id="wf-drill-title">Детализация фактора</h3>
+                <button class="bt sm" id="wf-drill-close" type="button">Закрыть</button>
+              </div>
+              <div id="wf-drill-body" class="tbl-wrap" tabindex="0" role="region" aria-label="Детальная таблица по выбранному фактору"></div>
+              <p class="drill-foot-hint">Нажмите в любом месте или Esc, чтобы закрыть</p>
+            </div>
+          </div>
+
+          <div class="drill-overlay" id="sku-drill" hidden role="region" aria-live="polite" aria-label="Карточка товара">
+            <div class="drill-card">
+              <div class="drill-hd">
+                <h3 id="sku-drill-title">Карточка товара</h3>
+                <button class="bt sm" id="sku-drill-close" type="button">Закрыть</button>
+              </div>
+              <div id="sku-drill-body"></div>
+              <p class="drill-foot-hint">Нажмите в любом месте или Esc, чтобы закрыть</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== RICE PRIORITIZATION ==================== -->
+        <section data-v="rice">
+          <div class="hd rice-hd">
+            <h1 tabindex="-1">Приоритизация <span class="hl" lang="en">RICE</span></h1>
+          </div>
+
+          <div class="rice-toolbar" role="toolbar" focusgroup="toolbar wrap" aria-label="Инструменты приоритизации RICE">
+            <div class="rice-tb-grp" role="group" aria-label="Создание">
+              <button type="button" class="bt p sm rice-tb-btn" id="btn-rice-add">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>
+                <span>Добавить</span>
+              </button>
+            </div>
+
+            <span class="rice-sep" role="separator" aria-orientation="vertical"></span>
+
+            <div class="rice-tb-grp" role="group" aria-label="Отображение блоков">
+              <div class="seg rice-view-pill">
+                <button type="button" class="rice-seg-icon" data-rice-view="table" aria-pressed="true" aria-label="Таблица инициатив" title="Таблица (показать / скрыть)">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2.5" width="12" height="11" rx="1.8"/><path d="M2 6h12M6.5 6v7.5"/></svg>
+                </button>
+              </div>
+              <div class="seg rice-view-pill">
+                <button type="button" class="rice-seg-icon" data-rice-view="charts" aria-pressed="true" aria-label="Графики приоритетов" title="Графики (показать / скрыть)">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13V8.5M8 13V4M13 13V6.5"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <span class="rice-sep" role="separator" aria-orientation="vertical"></span>
+
+            <div class="rice-tb-grp" role="group" aria-label="Шкала оценки RICE">
+              <div class="seg rice-seg" role="group" aria-label="Шкала">
+                <button type="button" data-rice-scale="template" aria-pressed="true" title="Упрощённый формат (шкала 1–3 из шаблона)">Упрощённый</button>
+                <button type="button" data-rice-scale="classic" aria-pressed="false" title="Классический формат (Intercom RICE)">Классический</button>
+              </div>
+            </div>
+
+            <span class="rice-sep" role="separator" aria-orientation="vertical"></span>
+
+            <div class="rice-tb-grp" role="group" aria-label="Режим хранения инициатив RICE">
+              <div class="seg rice-seg" role="group" aria-label="Хранение">
+                <button type="button" data-rice-storage="ram" aria-pressed="true" title="Хранить только в оперативной памяти (RAM)">RAM</button>
+                <button type="button" data-rice-storage="localstorage" aria-pressed="false" title="Сохранять на диске в localStorage">Disk</button>
+              </div>
+            </div>
+
+            <span class="rice-sep" role="separator" aria-orientation="vertical"></span>
+
+            <div class="rice-tb-grp" role="group" aria-label="Импорт и экспорт">
+              <button type="button" class="bt sm rice-tb-btn" id="btn-rice-import" title="Импортировать инициативы из файла">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 11V3M5 6l3-3 3 3M3 13h10"/></svg>
+                <span>Импорт</span>
+              </button>
+              <button type="button" class="bt sm rice-tb-btn" id="btn-rice-export" title="Экспортировать таблицу инициатив">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3v8M5 8l3 3 3-3M3 13h10"/></svg>
+                <span>Экспорт</span>
+              </button>
+            </div>
+
+            <span class="rice-sep" role="separator" aria-orientation="vertical"></span>
+
+            <div class="rice-tb-grp" role="group" aria-label="Управление списком">
+              <button type="button" class="bt sm rice-tb-btn" id="btn-rice-sample" title="Загрузить примеры инициатив">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4h10M3 8h7M3 12h5"/></svg>
+                <span>Пример</span>
+              </button>
+              <button type="button" class="bt sm rice-icon-btn" id="btn-rice-clear" aria-label="Очистить список инициатив" title="Очистить список инициатив">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5h10M6 4.5V3h4v1.5M5 4.5l.6 8.5h4.8l.6-8.5"/></svg>
+              </button>
+            </div>
+
+            <div class="rice-tb-right">
+              <span class="rice-sep" role="separator" aria-orientation="vertical"></span>
+
+              <div class="rice-tb-grp" role="group" aria-label="История действий">
+                <button type="button" class="bt sm rice-icon-btn" id="btn-rice-undo" aria-label="Отменить последнее действие" title="Отменить последнее действие (Ctrl+Z)" aria-disabled="true">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 6.5H10a3.5 3.5 0 1 1 0 7H7"/><path d="M6.5 4 4 6.5 6.5 9"/></svg>
+                </button>
+                <button type="button" class="bt sm rice-icon-btn" id="btn-rice-redo" aria-label="Повторить отменённое действие" title="Повторить действие (Ctrl+Y)" aria-disabled="true">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.5 6.5H6a3.5 3.5 0 1 0 0 7h3"/><path d="M9.5 4 12 6.5 9.5 9"/></svg>
+                </button>
+              </div>
+
+              <span class="rice-sep" role="separator" aria-orientation="vertical"></span>
+
+              <div class="rice-tb-grp rice-tb-search" id="rice-search-wrap" role="group" aria-label="Поиск">
+                <button type="button" class="bt sm rice-icon-btn" id="btn-rice-search-toggle" aria-label="Поиск по таблице" aria-expanded="false" title="Поиск по таблице">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg>
+                </button>
+                <input type="search" id="rice-search" class="rice-search" placeholder="Поиск..." aria-label="Поиск инициатив" hidden>
+              </div>
+            </div>
+          </div>
+
+          <div class="rice-stats-bar" id="rice-summary" aria-live="polite"></div>
+
+          <div class="rice-card" id="rice-table-card">
+            <div class="rice-empty" id="rice-empty" hidden></div>
+            <div class="rice-table-wrap" id="rice-table-wrap" role="region" aria-labelledby="rice-tbl-cap" tabindex="0">
+              <table class="rice-tbl" id="rice-table">
+                <caption id="rice-tbl-cap" class="sr-only">Таблица приоритизации инициатив RICE</caption>
+                <thead>
+                  <tr>
+                    <th scope="col" class="rice-th-num" data-col="rank" data-type="number">
+                      <button type="button" class="rice-th-btn" data-rice-col="rank" aria-haspopup="dialog">
+                        <span>№</span><span class="rice-th-ind" aria-hidden="true"></span>
+                      </button>
+                    </th>
+                    <th scope="col" class="rice-th-idea" data-col="idea" data-type="text">
+                      <button type="button" class="rice-th-btn" data-rice-col="idea" aria-haspopup="dialog">
+                        <span>Идея</span><span class="rice-th-ind" aria-hidden="true"></span>
+                      </button>
+                    </th>
+                    <th scope="col" class="rice-th-metric" data-col="reach" data-type="number">
+                      <button type="button" class="rice-th-btn" data-rice-col="reach" aria-haspopup="dialog">
+                        <span lang="en">Reach</span><span class="rice-th-ind" aria-hidden="true"></span>
+                      </button>
+                    </th>
+                    <th scope="col" class="rice-th-metric" data-col="impact" data-type="number">
+                      <button type="button" class="rice-th-btn" data-rice-col="impact" aria-haspopup="dialog">
+                        <span lang="en">Impact</span><span class="rice-th-ind" aria-hidden="true"></span>
+                      </button>
+                    </th>
+                    <th scope="col" class="rice-th-metric" data-col="confidence" data-type="number">
+                      <button type="button" class="rice-th-btn" data-rice-col="confidence" aria-haspopup="dialog">
+                        <span lang="en">Confidence</span><span class="rice-th-ind" aria-hidden="true"></span>
+                      </button>
+                    </th>
+                    <th scope="col" class="rice-th-metric" data-col="effort" data-type="number">
+                      <button type="button" class="rice-th-btn" data-rice-col="effort" aria-haspopup="dialog">
+                        <span lang="en">Effort</span><span class="rice-th-ind" aria-hidden="true"></span>
+                      </button>
+                    </th>
+                    <th scope="col" class="rice-th-score" data-col="rice" data-type="number" aria-sort="descending">
+                      <button type="button" class="rice-th-btn" data-rice-col="rice" aria-haspopup="dialog">
+                        <span lang="en">RICE</span><span class="rice-th-ind" aria-hidden="true"></span>
+                      </button>
+                    </th>
+                    <th scope="col" class="rice-th-resp" data-col="responsible" data-type="text">
+                      <button type="button" class="rice-th-btn" data-rice-col="responsible" aria-haspopup="dialog">
+                        <span>Ответственный</span><span class="rice-th-ind" aria-hidden="true"></span>
+                      </button>
+                    </th>
+                    <th scope="col" class="rice-th-date" data-col="deadline" data-type="date">
+                      <button type="button" class="rice-th-btn" data-rice-col="deadline" aria-haspopup="dialog">
+                        <span>Срок</span><span class="rice-th-ind" aria-hidden="true"></span>
+                      </button>
+                    </th>
+                    <th scope="col" class="rice-th-status" data-col="status" data-type="text">
+                      <button type="button" class="rice-th-btn" data-rice-col="status" aria-haspopup="dialog">
+                        <span>Статус</span><span class="rice-th-ind" aria-hidden="true"></span>
+                      </button>
+                    </th>
+                    <th scope="col" class="rice-th-act"><span class="sr-only">Действия</span></th>
+                  </tr>
+                </thead>
+                <tbody id="rice-tbody"></tbody>
+              </table>
+            </div>
+            <p class="sr-only" id="rice-sort-status" role="status"></p>
+          </div>
+
+          <div class="rice-card rice-chart-card" id="rice-chart-card">
+            <div class="rice-chart-hd">
+              <div class="rice-chart-title">
+                <h2>Визуализация приоритетов</h2>
+                <div class="rice-chart-legend" id="rice-chart-legend" aria-label="Легенда статусов"></div>
+              </div>
+              <span class="rice-chart-note">Нажмите на&nbsp;столбец или точку, чтобы открыть карточку инициативы</span>
+            </div>
+            <div class="rice-charts-grid">
+              <div class="rice-chart-panel">
+                <h3 class="rice-chart-sub">Рейтинг <span lang="en">RICE</span></h3>
+                <div id="rice-chart-bar" class="plotly-host"></div>
+              </div>
+              <div class="rice-chart-panel">
+                <h3 class="rice-chart-sub">Матрица «Эффект × Усилия»</h3>
+                <div id="rice-chart-matrix" class="plotly-host"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== RISK FRAMEWORK ==================== -->
+        <section data-v="risk-framework">
+          <div class="hd rf-hd">
+            <div class="rf-title-grp">
+              <h1 tabindex="-1">Фреймворк <span class="hl">и аналитика</span></h1>
+              <button type="button" class="rgm-help-step rf-help-btn" popovertarget="rk-help-types-pop">
+                <span class="help-ic" aria-hidden="true">?</span>
+                <span>Типы рисков</span>
+              </button>
+              <button type="button" class="rgm-help-step rf-help-btn" popovertarget="rk-help-map-pop">
+                <span class="help-ic" aria-hidden="true">?</span>
+                <span>Карта рисков</span>
+              </button>
+            </div>
+            <div class="rf-strip-meta">
+              <span class="rf-count-lbl" id="rf-summary-lbl">2025–2028 гг. · рисков: 9 · в RICE: 2</span>
+              <button type="button" class="rice-stats-reset" id="rf-reset-filters" hidden>Сбросить фильтры</button>
+            </div>
+          </div>
+
+          <div class="rice-toolbar rf-main-tb" id="rf-main-toolbar" role="toolbar" focusgroup="toolbar wrap" aria-label="Инструменты фреймворка рисков PESTEL">
+            <div class="rice-tb-grp" role="group" aria-label="Создание и AI">
+              <button type="button" class="bt p sm rice-tb-btn" id="rf-btn-add">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>
+                <span>Риск</span>
+              </button>
+              <button type="button" class="bt sm rice-tb-btn" id="rf-btn-ai-toggle" title="Поиск новых рисков и рисков на стыках с помощью AI">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 1.5l1.5 4.2L13.7 7.2l-4.2 1.5L8 12.9l-1.5-4.2L2.3 7.2l4.2-1.5z"/></svg>
+                <span>Поиск AI</span>
+              </button>
+            </div>
+
+            <span class="rice-sep" role="separator" aria-orientation="vertical"></span>
+
+            <div class="rice-tb-grp" role="group" aria-label="График кривых">
+              <div class="seg rice-view-pill">
+                <button type="button" class="rice-seg-icon" id="rf-btn-toggle-chart" aria-pressed="true" aria-label="График кривых Horizon Scanning" title="Показать или скрыть график кривых Horizon Scanning">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 13h12"/><path d="M2.5 11.5C5 11 6.5 4.5 13.5 4"/><path d="M2.5 11.5C5.5 11 7.5 7.5 10 8s2.5 3.5 4 3.5"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <span class="rice-sep" role="separator" aria-orientation="vertical"></span>
+
+            <div class="rice-tb-grp" role="group" aria-label="Режим хранения рисков">
+              <div class="seg" role="group" aria-label="Хранение">
+                <button type="button" data-rf-storage="ram" aria-pressed="true" title="Хранить только в оперативной памяти сессии (по умолчанию)">RAM</button>
+                <button type="button" data-rf-storage="disk" aria-pressed="false" title="Сохранять локально в IndexedDB браузера (синхронно с Картой рисков)">Disk</button>
+              </div>
+            </div>
+
+            <span class="rice-sep" role="separator" aria-orientation="vertical"></span>
+
+            <div class="rice-tb-grp" role="group" aria-label="Импорт, экспорт и список">
+              <button type="button" class="bt sm rice-tb-btn" id="rf-btn-import" title="Импортировать риски из файла (.xlsx, .csv) или буфера обмена">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 11V3M5 6l3-3 3 3M3 13h10"/></svg>
+                <span>Импорт</span>
+              </button>
+              <button type="button" class="bt sm rice-tb-btn dl-trigger" id="rf-dl-trigger" aria-haspopup="menu" aria-expanded="false" commandfor="rf-dl-menu" command="toggle-popover">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3v8M5 8l3 3 3-3M3 13h10"/></svg>
+                <span>Экспорт</span><span class="dl-caret" aria-hidden="true">▾</span>
+              </button>
+              <div id="rf-dl-menu" popover="auto" class="dl-menu-pop">
+                <div focusgroup="menu nomemory" aria-labelledby="rf-dl-trigger" class="dl-menu-list">
+                  <button type="button" id="rf-btn-xlsx">
+                    <span>Excel</span>
+                    <span class="dl-ext" aria-hidden="true">.xlsx</span>
+                  </button>
+                  <button type="button" id="rf-btn-csv">
+                    <span>CSV для Excel</span>
+                    <span class="dl-ext" aria-hidden="true">.csv</span>
+                  </button>
+                </div>
+              </div>
+              <button type="button" class="bt sm rice-tb-btn" id="rf-btn-sample" title="Загрузить единый демо-набор рисков">Пример</button>
+              <button type="button" class="bt sm rice-icon-btn" id="rf-btn-clear" aria-label="Очистить реестр рисков" title="Очистить реестр рисков">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5h10M6 4.5V3h4v1.5M5 4.5l.6 8.5h4.8l.6-8.5"/></svg>
+              </button>
+            </div>
+
+            <div class="rice-tb-right">
+              <span class="rice-sep" role="separator" aria-orientation="vertical"></span>
+              <div class="rice-tb-grp" role="group" aria-label="История изменений">
+                <button type="button" class="bt sm rice-icon-btn" id="rf-btn-undo" aria-label="Отменить последнее действие" title="Отменить (Ctrl+Z)" aria-disabled="true">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 6.5H10a3.5 3.5 0 1 1 0 7H7"/><path d="M6.5 4 4 6.5 6.5 9"/></svg>
+                </button>
+                <button type="button" class="bt sm rice-icon-btn" id="rf-btn-redo" aria-label="Повторить отменённое действие" title="Повторить (Ctrl+Y)" aria-disabled="true">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.5 6.5H6a3.5 3.5 0 1 0 0 7h3"/><path d="M9.5 4 12 6.5 9.5 9"/></svg>
+                </button>
+              </div>
+              <span class="rice-sep" role="separator" aria-orientation="vertical"></span>
+              <search class="rice-tb-grp rf-tb-search" id="rf-search-wrap" aria-label="Поиск рисков">
+                <button type="button" class="bt sm rice-icon-btn" id="rf-search-open" aria-label="Открыть поиск по рискам" title="Поиск по рискам">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg>
+                </button>
+                <div class="rf-search-capsule" id="rf-search-box" hidden>
+                  <input type="search" id="rf-search-input" placeholder="Поиск…" aria-label="Поиск по рискам PESTEL">
+                  <button type="button" class="rf-fclear" id="rf-search-close" aria-label="Очистить и скрыть поиск">×</button>
+                </div>
+              </search>
+            </div>
+          </div>
+
+          <div class="rf-work-view" id="rf-work-view">
+            <!-- Compact Interactive Horizon Scanning Card (SVG + Clickable Horizon Distribution) -->
+            <div class="fw-card rf-horizon-card" id="rf-horizon-card">
+              <div class="rf-hz-visual">
+                <svg id="rf-curves-svg" class="rf-svg" viewBox="0 0 680 154" role="img" aria-label="Интерактивные кривые типов рисков: клик по кривой фильтрует доску PESTEL" data-active-curve="">
+                  <g class="rf-grid-lines" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3" opacity="0.55">
+                    <line x1="112" y1="12" x2="112" y2="132"/>
+                    <line x1="256" y1="12" x2="256" y2="132"/>
+                    <line x1="430" y1="12" x2="430" y2="132"/>
+                    <line x1="596" y1="12" x2="596" y2="132"/>
+                  </g>
+                  <g class="rf-axes" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round">
+                    <path d="M42 10V132H656"/>
+                    <path d="M38.5 15L42 9L45.5 15"/>
+                    <path d="M650 128.5L657 132L650 135.5"/>
+                  </g>
+                  <text class="rf-axis-lbl" x="14" y="72" transform="rotate(-90 14 72)" text-anchor="middle">Влияние</text>
+                  <text class="rf-axis-tick" x="256" y="148" text-anchor="middle">6–12 мес</text>
+                  <text class="rf-axis-tick" x="430" y="148" text-anchor="middle">~4 года</text>
+                  <text class="rf-axis-tick" x="596" y="148" text-anchor="middle">6+ лет</text>
+
+                  <g class="rf-curve-g" data-curve="black_swan" tabindex="0" role="button" aria-pressed="false" aria-label="Фильтр: Чёрные лебеди">
+                    <path class="rf-hit" d="M42 132C92 130 118 26 176 22H642"/>
+                    <path class="rf-path is-swan" d="M42 132C92 130 118 26 176 22H642"/>
+                    <text class="rf-clbl is-swan" x="184" y="16">Чёрные лебеди · внезапный шок</text>
+                  </g>
+
+                  <g class="rf-curve-g" data-curve="trend" tabindex="0" role="button" aria-pressed="false" aria-label="Фильтр: Тренды 6+ лет">
+                    <path class="rf-hit" d="M42 132C148 126 244 52 378 46 478 41 556 40 642 40"/>
+                    <path class="rf-path is-trend" d="M42 132C148 126 244 52 378 46 478 41 556 40 642 40"/>
+                    <text class="rf-clbl is-trend" x="444" y="34">Тренды · 6+ лет</text>
+                  </g>
+
+                  <g class="rf-curve-g" data-curve="event" tabindex="0" role="button" aria-pressed="false" aria-label="Фильтр: События ~4 года">
+                    <path class="rf-hit" d="M42 132C144 124 228 62 322 58 404 55 458 110 524 128 556 132 598 132 642 132"/>
+                    <path class="rf-path is-event" d="M42 132C144 124 228 62 322 58 404 55 458 110 524 128 556 132 598 132 642 132"/>
+                    <text class="rf-clbl is-event" x="478" y="95">События · ~4 года</text>
+                  </g>
+
+                  <g class="rf-curve-g" data-curve="news" tabindex="0" role="button" aria-pressed="false" aria-label="Фильтр: Инфоповоды 6–12 мес">
+                    <path class="rf-hit" d="M42 132C102 129 162 108 228 107 292 106 338 128 396 132"/>
+                    <path class="rf-path is-news" d="M42 132C102 129 162 108 228 107 292 106 338 128 396 132"/>
+                    <text class="rf-clbl is-news" x="184" y="100">Инфоповоды · 6–12 мес</text>
+                  </g>
+
+                  <g class="rf-curve-g" data-curve="weak" tabindex="0" role="button" aria-pressed="false" aria-label="Фильтр: Слабые сигналы">
+                    <circle class="rf-weak-ring" cx="64" cy="125" r="13"/>
+                    <circle class="rf-weak-dot" cx="64" cy="125" r="3"/>
+                    <text class="rf-clbl is-weak" x="42" y="148">Слабые сигналы</text>
+                  </g>
+                </svg>
+              </div>
+
+              <div class="rf-hz-legend" role="group" aria-label="Типы рисков по горизонту: клик фильтрует доску">
+                <div class="rf-hz-hd">
+                  <span>Тип / горизонт</span>
+                </div>
+                <div class="rf-hz-rows">
+                  <span class="rf-hz-wrap" data-rf-hwrap="black_swan">
+                    <button type="button" class="rf-hz-btn" data-rf-hbtn="black_swan" aria-pressed="false">
+                      <span class="rf-cdot is-swan" aria-hidden="true"></span>
+                      <b class="rf-hz-cnt" data-rf-hcnt="black_swan">0</b>
+                      <span class="rf-hz-name">Чёрные лебеди</span>
+                      <span class="rf-hz-cue">внезапный шок</span>
+                    </button>
+                    <button type="button" class="rf-fclear" data-rf-hclr="black_swan" aria-label="Сбросить фильтр Чёрные лебеди" hidden>×</button>
+                  </span>
+                  <span class="rf-hz-wrap" data-rf-hwrap="trend">
+                    <button type="button" class="rf-hz-btn" data-rf-hbtn="trend" aria-pressed="false">
+                      <span class="rf-cdot is-trend" aria-hidden="true"></span>
+                      <b class="rf-hz-cnt" data-rf-hcnt="trend">0</b>
+                      <span class="rf-hz-name">Тренды</span>
+                      <span class="rf-hz-cue">сдвиг · 6+ лет</span>
+                    </button>
+                    <button type="button" class="rf-fclear" data-rf-hclr="trend" aria-label="Сбросить фильтр Тренды" hidden>×</button>
+                  </span>
+                  <span class="rf-hz-wrap" data-rf-hwrap="event">
+                    <button type="button" class="rf-hz-btn" data-rf-hbtn="event" aria-pressed="false">
+                      <span class="rf-cdot is-event" aria-hidden="true"></span>
+                      <b class="rf-hz-cnt" data-rf-hcnt="event">0</b>
+                      <span class="rf-hz-name">События</span>
+                      <span class="rf-hz-cue">волна · ~4 года</span>
+                    </button>
+                    <button type="button" class="rf-fclear" data-rf-hclr="event" aria-label="Сбросить фильтр События" hidden>×</button>
+                  </span>
+                  <span class="rf-hz-wrap" data-rf-hwrap="news">
+                    <button type="button" class="rf-hz-btn" data-rf-hbtn="news" aria-pressed="false">
+                      <span class="rf-cdot is-news" aria-hidden="true"></span>
+                      <b class="rf-hz-cnt" data-rf-hcnt="news">0</b>
+                      <span class="rf-hz-name">Инфоповоды</span>
+                      <span class="rf-hz-cue">всплеск · 6–12 мес</span>
+                    </button>
+                    <button type="button" class="rf-fclear" data-rf-hclr="news" aria-label="Сбросить фильтр Инфоповоды" hidden>×</button>
+                  </span>
+                  <span class="rf-hz-wrap" data-rf-hwrap="weak">
+                    <button type="button" class="rf-hz-btn" data-rf-hbtn="weak" aria-pressed="false">
+                      <span class="rf-cdot is-weak" aria-hidden="true"></span>
+                      <b class="rf-hz-cnt" data-rf-hcnt="weak">0</b>
+                      <span class="rf-hz-name">Слабые сигналы</span>
+                      <span class="rf-hz-cue">признак · 1–3 г.</span>
+                    </button>
+                    <button type="button" class="rf-fclear" data-rf-hclr="weak" aria-label="Сбросить фильтр Слабые сигналы" hidden>×</button>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Horizontal 6-Column PESTEL Board + Dedicated AI Zone -->
+            <div id="rf-board-view">
+              <div class="rf-pestel-grid" id="rf-pestel-grid"></div>
+              <div class="rf-ai-zone" id="rf-ai-pestel-zone" hidden>
+                <div class="rf-ai-divider" id="rf-ai-divider" role="separator">
+                  <span>Ниже — риски от AI</span>
+                </div>
+                <div class="rf-pestel-grid is-ai-zone" id="rf-ai-pestel-grid"></div>
+              </div>
+            </div>
+
+            <div class="rf-empty" id="rf-empty" hidden>
+              <p id="rf-empty-msg">Нет рисков по выбранному фильтру.</p>
+              <div class="u-row-wrap-8">
+                <button type="button" class="bt p sm" id="rf-empty-add">+ Добавить риск</button>
+                <button type="button" class="bt sm" id="rf-empty-reset">Сбросить фильтр</button>
+                <button type="button" class="bt sm" id="rf-empty-demo">Загрузить пример</button>
+              </div>
+            </div>
+
+            <p class="sr-only" id="rf-live-status" role="status"></p>
+          </div>
+        </section>
+
+        <!-- ==================== RISK MAP ==================== -->
+        <section data-v="risk-map">
+          <div class="hd rf-hd">
+            <div class="rf-title-grp">
+              <h1 tabindex="-1">Карта <span class="hl">рисков</span></h1>
+              <button type="button" class="rgm-help-step rf-help-btn" popovertarget="rk-help-map-pop">
+                <span class="help-ic" aria-hidden="true">?</span>
+                <span>Карта рисков</span>
+              </button>
+              <button type="button" class="rgm-help-step rf-help-btn" popovertarget="rk-help-types-pop">
+                <span class="help-ic" aria-hidden="true">?</span>
+                <span>Типы рисков</span>
+              </button>
+            </div>
+            <div class="rf-strip-meta">
+              <span class="rf-count-lbl" id="rm-summary-lbl">2025–2028 гг. · рисков: 9 · в RICE: 2</span>
+              <button type="button" class="rice-stats-reset" id="rm-clear-filters" hidden>Сбросить фильтры</button>
+            </div>
+          </div>
+
+          <div class="rice-toolbar rf-main-tb" id="rm-main-toolbar" role="toolbar" focusgroup="toolbar wrap" aria-label="Инструменты карты рисков">
+            <div class="rice-tb-grp" role="group" aria-label="Создание">
+              <button type="button" class="bt p sm rice-tb-btn" id="rm-btn-add">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg>
+                <span>Риск</span>
+              </button>
+            </div>
+
+            <span class="rice-sep" role="separator" aria-orientation="vertical"></span>
+
+            <div class="rice-tb-grp" role="group" aria-label="Хранение рисков">
+              <div class="seg" role="group" aria-label="Хранение">
+                <button type="button" data-rm-storage="ram" aria-pressed="true" title="Хранить только в оперативной памяти сессии (по умолчанию)">RAM</button>
+                <button type="button" data-rm-storage="disk" aria-pressed="false" title="Сохранять локально в IndexedDB браузера (синхронно с Фреймворком)">Disk</button>
+              </div>
+            </div>
+
+            <span class="rice-sep" role="separator" aria-orientation="vertical"></span>
+
+            <div class="rice-tb-grp" role="group" aria-label="Импорт, экспорт и список">
+              <button type="button" class="bt sm rice-tb-btn" id="rm-btn-import" title="Импортировать риски из Excel, CSV или текста">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 11V3M5 6l3-3 3 3M3 13h10"/></svg>
+                <span>Импорт</span>
+              </button>
+              <button type="button" class="bt sm rice-tb-btn dl-trigger" id="rm-dl-trigger" aria-haspopup="menu" aria-expanded="false" commandfor="rm-dl-menu" command="toggle-popover">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3v8M5 8l3 3 3-3M3 13h10"/></svg>
+                <span>Экспорт</span><span class="dl-caret" aria-hidden="true">▾</span>
+              </button>
+              <div id="rm-dl-menu" popover="auto" class="dl-menu-pop">
+                <div focusgroup="menu nomemory" aria-labelledby="rm-dl-trigger" class="dl-menu-list">
+                  <button type="button" id="rm-btn-xlsx">
+                    <span>Excel</span>
+                    <span class="dl-ext" aria-hidden="true">.xlsx</span>
+                  </button>
+                  <button type="button" id="rm-btn-csv">
+                    <span>CSV для Excel</span>
+                    <span class="dl-ext" aria-hidden="true">.csv</span>
+                  </button>
+                  <a class="dl-menu-link" id="rm-btn-pptx" href="assets/samples/risks_map_example.pptx" download="Карта рисков (шаблон).pptx">
+                    <span>Шаблон слайда</span>
+                    <span class="dl-ext" aria-hidden="true">.pptx</span>
+                  </a>
+                </div>
+              </div>
+              <button type="button" class="bt sm rice-tb-btn" id="rm-btn-sample" title="Загрузить единый демо-набор рисков">Пример</button>
+              <button type="button" class="bt sm rice-icon-btn" id="rm-btn-clear" aria-label="Очистить реестр рисков" title="Очистить реестр рисков">
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 4.5h10M6 4.5V3h4v1.5M5 4.5l.6 8.5h4.8l.6-8.5"/></svg>
+              </button>
+            </div>
+
+            <div class="rice-tb-right">
+              <span class="rice-sep" role="separator" aria-orientation="vertical"></span>
+              <div class="rice-tb-grp" role="group" aria-label="История изменений">
+                <button type="button" class="bt sm rice-icon-btn" id="rm-btn-undo" aria-label="Отменить последнее действие" title="Отменить (Ctrl+Z)" aria-disabled="true">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 6.5H10a3.5 3.5 0 1 1 0 7H7"/><path d="M6.5 4 4 6.5 6.5 9"/></svg>
+                </button>
+                <button type="button" class="bt sm rice-icon-btn" id="rm-btn-redo" aria-label="Повторить отменённое действие" title="Повторить (Ctrl+Y)" aria-disabled="true">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11.5 6.5H6a3.5 3.5 0 1 0 0 7h3"/><path d="M9.5 4 12 6.5 9.5 9"/></svg>
+                </button>
+              </div>
+              <span class="rice-sep" role="separator" aria-orientation="vertical"></span>
+              <search class="rice-tb-grp rf-tb-search" id="rm-search-wrap" aria-label="Поиск рисков">
+                <button type="button" class="bt sm rice-icon-btn" id="rm-search-open" aria-label="Открыть поиск по карте рисков" title="Поиск по рискам">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="m10.5 10.5 3 3"/></svg>
+                </button>
+                <div class="rf-search-capsule" id="rm-search-box" hidden>
+                  <input type="search" id="rm-search-inp" placeholder="Поиск…" aria-label="Поиск по карте рисков">
+                  <button type="button" class="rf-fclear" id="rm-search-close" aria-label="Очистить и скрыть поиск">×</button>
+                </div>
+              </search>
+            </div>
+          </div>
+
+          <!-- Compact KPI & Criticality Filter Strip -->
+          <div class="rf-filter-strip rm-filter-strip">
+            <search class="rm-filters-inline" aria-label="Фильтр по уровню критичности риска">
+              <div class="rm-kpi-inline" role="group" aria-label="Уровень критичности">
+                <button type="button" class="rf-fchip" data-rm-sev="all" aria-pressed="true">Все <b id="rm-kpi-total">0</b></button>
+                <span class="rf-fwrap" data-rm-sevwrap="2">
+                  <button type="button" class="rf-fchip rm-sev-chip is-high" data-rm-sev="2" aria-pressed="false">••• Высокий <b id="rm-kpi-high">0</b></button>
+                  <button type="button" class="rf-fclear" data-rm-sevclr="2" aria-label="Сбросить фильтр Высокий" hidden>×</button>
+                </span>
+                <span class="rf-fwrap" data-rm-sevwrap="1">
+                  <button type="button" class="rf-fchip rm-sev-chip is-med" data-rm-sev="1" aria-pressed="false">•• Средний <b id="rm-kpi-med">0</b></button>
+                  <button type="button" class="rf-fclear" data-rm-sevclr="1" aria-label="Сбросить фильтр Средний" hidden>×</button>
+                </span>
+                <span class="rf-fwrap" data-rm-sevwrap="0">
+                  <button type="button" class="rf-fchip rm-sev-chip is-low" data-rm-sev="0" aria-pressed="false">• Низкий <b id="rm-kpi-low">0</b></button>
+                  <button type="button" class="rf-fclear" data-rm-sevclr="0" aria-label="Сбросить фильтр Низкий" hidden>×</button>
+                </span>
+              </div>
+            </search>
+          </div>
+
+          <!-- Full-Width 3x3 Interactive Risk Matrix (Drag & Drop + Compact Cards) -->
+          <div class="fw-card rm-matrix-card" id="rm-matrix-view">
+            <div class="rm-grid" id="rg" role="grid" aria-label="Матрица рисков 3 на 3: вероятность и влияние"></div>
+          </div>
+
+          <p class="sr-only" id="rm-live-status" role="status"></p>
+        </section>
+
+        <!-- ==================== MARKET ==================== -->
+        <section data-v="market">
+          <h1 tabindex="-1">Аналитика <span class="hl">рынка</span></h1>
+          <div class="empty">
+            Модуль аналитики рынка находится в разработке.
+          </div>
+        </section>
+
+        <!-- ==================== ATTRIBUTES ==================== -->
+        <section data-v="attributes" data-s="i">
+          <h1 tabindex="-1">Выделение <span class="hl">параметров товаров</span> из их названий</h1>
+
+          <div class="rgm-top-row">
+            <div class="sp">
+              <span class="s on"><b>1</b>Введите данные и выберите режим</span>
+              <span class="line-sep" aria-hidden="true"></span>
+              <span class="s"><b>2</b>Проверьте таблицу и скачайте файл</span>
+              <span class="rgm-step-div" aria-hidden="true"></span>
+              <button class="rgm-help-step" type="button" popovertarget="rgm-help-pop">
+                <span class="help-ic" aria-hidden="true">
+                  <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5.75 6a2.35 2.35 0 0 1 4.55.8c0 1.45-2.3 1.9-2.3 3.2"/>
+                    <circle cx="8" cy="12.9" r="0.85" fill="currentColor" stroke="none"/>
+                  </svg>
+                </span>
+                <span>Инструкция</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="rgm-help-pop" popover class="rgm-help-pop">
+            <div class="rgm-help-pop-hd">
+              <h2>Инструкция: формат данных и режимы</h2>
+              <button class="bt sm" type="button" popovertarget="rgm-help-pop" popovertargetaction="hide">Закрыть</button>
+            </div>
+            <div class="rgm-help-split">
+              <div class="help-col">
+                <div class="help-col-title">1. Входные данные</div>
+                <div class="help-card">
+                  <div class="help-card-hd">
+                    <strong>Столбцы</strong>
+                    <span class="help-chip">разделитель , или ;</span>
+                  </div>
+                  <div class="help-examples">
+                    <span class="help-ex">жирность,упаковка</span>
+                    <span class="help-ex">жирность, упаковка</span>
+                    <span class="help-ex">жирность; упаковка</span>
+                  </div>
+                  <p>Столбец «Название товара» добавляется автоматически.</p>
+                </div>
+                <div class="help-card">
+                  <div class="help-card-hd">
+                    <strong>Названия товаров</strong>
+                    <span class="help-chip">1 строка = 1 товар</span>
+                  </div>
+                  <p>По одной позиции на строку — список можно вставлять напрямую из Excel. В таблице показаны первые 10 строк, в экспорт (.xlsx, .csv, .txt) попадают все 100%.</p>
+                </div>
+                <div class="help-card">
+                  <div class="help-card-hd">
+                    <strong>Доп. инструкции</strong>
+                    <span class="help-chip">только AI</span>
+                  </div>
+                  <p>Опциональные правила в свободной форме — применяются в режимах Локальный AI и AI-агент (API).</p>
+                </div>
+              </div>
+
+              <div class="help-col">
+                <div class="help-col-title">2. Способы обработки</div>
+                <div class="help-card">
+                  <div class="help-card-hd">
+                    <strong>Локально (Wasm)</strong>
+                    <span class="help-chip">мгновенно · офлайн</span>
+                  </div>
+                  <p>Разбор по встроенным FMCG-словарям и шаблонам в памяти браузера — без скачивания моделей и отправки данных.</p>
+                </div>
+                <div class="help-card">
+                  <div class="help-card-hd">
+                    <strong>Локальный AI (WebGPU)</strong>
+                    <span class="help-chip">Qwen3 · батчи по 4</span>
+                  </div>
+                  <p>Автономная нейросеть на вашей видеокарте с дедупликацией и поддержкой доп. инструкций. Данные не покидают ПК.</p>
+                </div>
+                <div class="help-card">
+                  <div class="help-card-hd">
+                    <strong>AI-агент (API)</strong>
+                    <span class="help-chip">батчи по 50 · кэш</span>
+                  </div>
+                  <p>Облачные модели (ProxyAPI, OpenAI, Anthropic, Google) для произвольных столбцов и сложных правил с кэшированием промпта.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="rgm-setup-grid">
+            <!-- Левая карточка: столбцы, исходные названия и инструкции -->
+            <div class="pc rgm-card">
+              <div class="rgm-card-body">
+                <div class="rgm-field">
+                  <label class="rgm-sub-lbl" for="rgm-cols">Столбцы (через запятую)</label>
+                  <input class="st-input rgm-cols-inp" id="rgm-cols" name="rgm-cols" type="text" required value="Категория, бренд, жирность, упаковка, вес, цена" placeholder="Категория, бренд, жирность, упаковка, вес, цена">
+                </div>
+
+                <div class="rgm-field">
+                  <div class="u-row-between">
+                    <label class="rgm-sub-lbl" for="inp">Названия товаров (по одному на строку)</label>
+                    <span class="rgm-import-note" id="rgm-import-note" hidden>
+                      <span id="rgm-import-text"></span>
+                      <button type="button" class="lk" id="btn-rgm-clear-import">Сбросить</button>
+                    </span>
+                  </div>
+                  <textarea class="ta rgm-main-ta" id="inp" name="rgm-products" required placeholder="сырпарм200гготовкупотр599рСЫРЗАВОД&#10;БЗМЖ смет Луговушка 20% 300г пл/ст 129р">сырпарм200гготовкупотр599рСЫРЗАВОД
+БЗМЖ смет Луговушка 20% 300г пл/ст 129р
+6*0.5л вода мин Горный Ключ пэт 240р</textarea>
+                </div>
+
+                <div class="rgm-instr-wrap is-disabled" id="rgm-instr-wrap" title="Инструкции доступны только при выборе AI (Локальный AI WebGPU или AI-агент API)">
+                  <label class="rgm-sub-lbl" for="rgm-instructions">Дополнительные инструкции (опционально)</label>
+                  <textarea class="ta ta-sm" id="rgm-instructions" name="rgm-instructions" rows="1" disabled placeholder="Доступно для AI (WebGPU / API)"></textarea>
+                </div>
+              </div>
+
+              <div class="rgm-card-foot">
+                <button class="bt p" id="send" type="button">Отправить</button>
+                <input type="file" id="rgm-file-inp" accept=".xlsx,.csv,.txt" hidden>
+                <button class="bt sm" id="btn-rgm-upload" type="button" title="Загрузить файл (.xlsx, .csv, .txt) и настроить импорт">Загрузить файл</button>
+                <button class="lk" id="fill" type="button">Подставить пример</button>
+              </div>
+            </div>
+
+            <!-- Правая карточка: способ обработки и параметры модели -->
+            <div class="pc rgm-card">
+              <div class="rgm-card-body">
+                <span class="rgm-card-title">Способ обработки</span>
+
+                <fieldset class="seg-ctrl">
+                  <legend class="sr-only">Способ обработки названий</legend>
+                  <label class="seg-opt">
+                    <input type="radio" name="rgm-mode" value="wasm" checked>
+                    <span>Локально (<span lang="en">Wasm</span>)</span>
+                  </label>
+                  <label class="seg-opt">
+                    <input type="radio" name="rgm-mode" value="local-ai">
+                    <span>Локальный <span lang="en">AI</span></span>
+                  </label>
+                  <label class="seg-opt">
+                    <input type="radio" name="rgm-mode" value="ai">
+                    <span><span lang="en">AI</span>-агент (<span lang="en">API</span>)</span>
+                  </label>
+                </fieldset>
+
+                <div class="rgm-sub-pane" id="wasm-sub-note">
+                  Мгновенный разбор правил и FMCG-словаря в памяти браузера — без скачивания моделей и отправки данных на сервер.
+                </div>
+
+                <div class="rgm-sub-pane" id="api-sub-bar" hidden>
+                  <div class="rgm-api-row">
+                    <span class="api-pill" data-api-badge data-api-task="attributes">ProxyAPI · DeepSeek V4.1 Flash (1017)</span>
+                    <button class="bt sm" type="button" data-open-api="attributes">Настройка API</button>
+                  </div>
+                  <p class="hint u-mt6 u-fs-xs">
+                    Облачный разбор произвольных столбцов и ваших инструкций через подключённого провайдера.
+                  </p>
+                </div>
+
+                <div class="rgm-sub-pane local-ai-panel" id="local-ai-panel" hidden>
+                  <div class="local-settings-cols">
+                    <div class="local-col-left">
+                      <div class="local-model-cols-hint" aria-hidden="true"><span>Модель</span><span>Качество</span><span>Видеопамять</span></div>
+                      <div class="local-model-bar">
+                        <label class="sr-only" for="local-model-select">Локальная модель (WebGPU)</label>
+                        <select class="st-select local-model-select" id="local-model-select" name="localModel">
+                          <option value="qwen3-0.6b">Qwen3 0.6B (~450 МБ · смартфоны / лёгкая)</option>
+                          <option value="qwen3-1.7b">Qwen3 1.7B (~1,1 ГБ · быстрая)</option>
+                          <option value="qwen3-4b" selected>Qwen3 4B (~2,5 ГБ · баланс)</option>
+                          <option value="qwen3-8b">Qwen3 8B (~4,8 ГБ · макс. точность, GPU ≥ 8 ГБ)</option>
+                        </select>
+                        <button class="bt sm icon-plus-btn" id="btn-local-mirror-toggle" type="button" aria-expanded="false" aria-controls="local-mirror-wrap" aria-label="Указать своё зеркало весов" title="Указать своё зеркало весов (по умолчанию Hugging Face CDN)">+</button>
+                      </div>
+                      <div class="local-mirror-wrap" id="local-mirror-wrap" hidden>
+                        <label class="sr-only" for="local-mirror-url">Зеркало весов</label>
+                        <input id="local-mirror-url" class="st-input" type="url" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="По умолчанию Hugging Face CDN">
+                      </div>
+                      <ul class="local-specs-list" id="local-model-diff"></ul>
+                    </div>
+
+                    <div class="local-col-right">
+                      <label class="sw-label" for="local-cache-switch">
+                        <input id="local-cache-switch" type="checkbox" switch>
+                        <span>Кэш в браузере</span>
+                      </label>
+                      <div class="local-cache-actions">
+                        <span class="api-pill" id="local-cache-status">Выкл</span>
+                        <button class="lk" id="btn-clear-local-cache" type="button">Очистить</button>
+                      </div>
+                      <div class="cache-policy-box" id="local-cache-hint">
+                        <span class="cache-policy-k">Автоочистка</span>
+                        <span class="cache-policy-v">При закрытии или отмене</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Нижняя полноширинная карточка: пример / прогресс / результат -->
+          <div class="pc rgm-result-card">
+            <div data-for="i" class="u-grid-12">
+              <span class="lb u-mu">Пример автоматического разбора</span>
+              <div class="sg rgm-sample-strip">
+                <div tabindex="0" data-full="сырпарм200гготовкупотр599рСЫРЗАВОД"><mark class="m1">сыр</mark>парм<mark class="m2">200г</mark>готовкупотр<mark class="m3">599р</mark><mark class="m4">СЫРЗАВОД</mark></div>
+                <div tabindex="0" data-full="БЗМЖ смет Луговушка 20% 300г пл/ст 129р">БЗМЖ <mark class="m1">смет</mark> <mark class="m4">Луговушка</mark> <mark class="m5">20%</mark> <mark class="m2">300г</mark> <mark class="m6">пл/ст</mark> <mark class="m3">129р</mark></div>
+                <div tabindex="0" data-full="6*0.5л вода мин Горный Ключ пэт 240р"><mark class="m2">6*0.5л</mark> <mark class="m1">вода</mark> мин <mark class="m4">Горный Ключ</mark> <mark class="m6">пэт</mark> <mark class="m3">240р</mark></div>
+              </div>
+              <div class="tbl-wrap" tabindex="0" role="region" aria-label="Пример выделенных атрибутов">
+                <table class="tbl">
+                  <caption class="sr-only">Пример результата разбора чековых строк</caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">Название товара</th>
+                      <th scope="col" class="m1">Категория</th>
+                      <th scope="col" class="m4">Бренд</th>
+                      <th scope="col" class="m5">Жирность</th>
+                      <th scope="col" class="m6">Упаковка</th>
+                      <th scope="col" class="m2">Вес</th>
+                      <th scope="col" class="m3">Цена</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><span class="cell-trunc" tabindex="0" data-full="сырпарм200гготовкупотр599рСЫРЗАВОД">сырпарм200гготовкупотр599рСЫРЗАВОД</span></td>
+                      <td>Сыр</td><td>СЫРЗАВОД</td><td>—</td><td>—</td><td>200</td><td>599</td>
+                    </tr>
+                    <tr>
+                      <td><span class="cell-trunc" tabindex="0" data-full="БЗМЖ смет Луговушка 20% 300г пл/ст 129р">БЗМЖ смет Луговушка 20% 300г пл/ст 129р</span></td>
+                      <td>Сметана</td><td>Луговушка</td><td>20%</td><td>Пластиковый стакан</td><td>300</td><td>129</td>
+                    </tr>
+                    <tr>
+                      <td><span class="cell-trunc" tabindex="0" data-full="6*0.5л вода мин Горный Ключ пэт 240р">6*0.5л вода мин Горный Ключ пэт 240р</span></td>
+                      <td>Вода</td><td>Горный Ключ</td><td>—</td><td>ПЭТ-бутылка</td><td>3000</td><td>240</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <div data-for="r" hidden role="status" class="u-grid-10">
+              <span class="lb u-mu">Разбираем названия…</span>
+              <div id="local-ai-progress-box" hidden class="u-grid-8">
+                <progress class="trk-native" id="local-ai-prog" max="100" value="0"></progress>
+                <div class="u-row-between">
+                  <span id="local-ai-status">Подготовка…</span>
+                  <button class="bt sm" id="btn-cancel-local-ai" type="button">Отменить</button>
+                </div>
+              </div>
+              <div id="rgm-skeleton" class="u-grid-8">
+                <div class="sk"></div>
+                <div class="sk sk-80"></div>
+                <div class="sk sk-60"></div>
+              </div>
+            </div>
+
+            <div data-for="d" hidden class="u-grid-12">
+              <div class="res-head-bar">
+                <div class="res-head-meta">
+                  <span class="lb u-mu">Результат</span>
+                  <span class="hint" id="res-limit-note" hidden></span>
+                </div>
+                <div class="res-head-actions">
+                  <button class="bt sm" id="btn-rgm-save-dataset" type="button">Сохранить внутри приложения</button>
+                  <button class="bt p sm dl-trigger" id="rgm-dl-trigger" type="button" aria-haspopup="menu" aria-expanded="false" commandfor="rgm-dl-menu" command="toggle-popover">
+                    Скачать <span class="dl-caret" aria-hidden="true">▾</span>
+                  </button>
+                  <div id="rgm-dl-menu" popover="auto" class="dl-menu-pop">
+                    <div focusgroup="menu nomemory" aria-labelledby="rgm-dl-trigger" class="dl-menu-list">
+                      <button type="button" id="btn-rgm-xlsx">
+                        <span>Excel</span>
+                        <span class="dl-ext" aria-hidden="true">.xlsx</span>
+                      </button>
+                      <button type="button" id="btn-rgm-csv">
+                        <span>CSV (UTF-8)</span>
+                        <span class="dl-ext" aria-hidden="true">.csv</span>
+                      </button>
+                      <button type="button" id="btn-rgm-txt">
+                        <span>Текст (#-разделитель)</span>
+                        <span class="dl-ext" aria-hidden="true">.txt</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div id="res" class="tbl-wrap" tabindex="0" role="region" aria-label="Результат выделения параметров товаров"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== STUB ==================== -->
+        <section data-v="stub">
+          <h1 id="stt" tabindex="-1">Страница не найдена</h1>
+          <p class="sub">Страница не найдена.</p>
+          <p class="u-mt20"><a class="bt p" href="#home">На главную</a></p>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Native Command Palette Modal Dialog -->
+  <dialog id="pal" closedby="any" aria-label="Поиск разделов и действий">
+    <div class="pb">
+      <div class="pal-hd-bar">
+        <label class="sr-only" for="pi">Поиск страницы или действия</label>
+        <input id="pi" type="text" autofocus role="combobox" aria-expanded="true" aria-controls="pl" aria-autocomplete="list" placeholder="Страница или действие…" autocomplete="off">
+        <button type="button" id="pal-close" class="lk" aria-label="Закрыть поиск">Esc</button>
+      </div>
+      <ul id="pl" role="listbox"></ul>
+    </div>
+  </dialog>
+
+  <!-- Unified Settings Modal Dialog (Tab 1: AI API, Tab 2: Data Management) -->
+  <dialog id="api-dlg" closedby="any" aria-labelledby="api-title">
+    <div class="pb legal-box settings-dlg-box">
+      <div class="legal-hd">
+        <h2 id="api-title">Настройки</h2>
+        <button type="button" id="api-close" class="bt sm" aria-label="Закрыть настройки">Закрыть</button>
+      </div>
+
+      <div class="settings-tabs" role="tablist" focusgroup="tablist nomemory" aria-label="Разделы настроек">
+        <button type="button" role="tab" id="settings-tab-data" aria-selected="true" tabindex="0" focusgroupstart data-settings-tab="data">Управление данными</button>
+        <button type="button" role="tab" id="settings-tab-api" aria-selected="false" tabindex="-1" data-settings-tab="api">ИИ API</button>
+      </div>
+
+      <!-- Tab 1: Centralized Data & Storage Management -->
+      <div role="tabpanel" id="settings-panel-data" aria-labelledby="settings-tab-data">
+        <div class="settings-panel-inner">
+          <div class="dm-summary-bar" id="dm-summary-bar">
+            <div class="dm-summary-main">
+              <strong>Сводка и полная очистка</strong>
+              <div class="dm-summary-pills" id="dm-summary-pills" role="status" aria-live="polite"></div>
+            </div>
+            <button type="button" id="btn-clear-all-data" class="bt sm dm-danger-btn">Очистить всё</button>
+          </div>
+
+          <p class="ds-lead u-m0">
+            По умолчанию все данные живут <b>только в памяти текущей сессии (RAM)</b> и исчезают при обновлении (F5). Постоянное сохранение в браузере включается вручную ниже.
+          </p>
+
+          <div id="settings-data-list" class="dm-list"></div>
+        </div>
+      </div>
+
+      <!-- Tab 2: AI API Settings -->
+      <div role="tabpanel" id="settings-panel-api" aria-labelledby="settings-tab-api" hidden>
+        <div class="settings-panel-inner">
+          <form class="api-form api-form-compact" id="api-form">
+            <div class="api-row-3">
+              <div class="field">
+                <label for="api-provider">Провайдер:</label>
+                <select id="api-provider" name="provider">
+                  <option value="proxyapi">ProxyAPI (по умолчанию)</option>
+                  <option value="openai">OpenAI (официальный)</option>
+                  <option value="anthropic">Anthropic (официальный)</option>
+                  <option value="google">Google Gemini (официальный)</option>
+                  <option value="custom">Другой (Custom URL)</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="api-protocol">Протокол:</label>
+                <select id="api-protocol" name="protocol">
+                  <option value="openai">OpenAI (/chat/completions)</option>
+                  <option value="anthropic">Anthropic (/v1/messages)</option>
+                  <option value="google">Google (generateContent)</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="api-base-url"><span lang="en">Base URL</span>:</label>
+                <input id="api-base-url" name="baseUrl" type="url" required autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="https://api.proxyapi.ru/v1">
+              </div>
+            </div>
+
+            <div class="api-model-key-row">
+              <div class="field api-model-col">
+                <div class="api-model-label-row">
+                  <label for="api-model-select">Модель:</label>
+                  <span class="api-model-cols-hint" aria-hidden="true"><span>Качество</span><span title="Примерная стоимость обработки 1 000 уникальных товаров">~₽ / 1k тов.</span></span>
+                </div>
+                <select id="api-model-select" name="modelSelect" class="api-model-select"></select>
+                <div id="api-model-custom-wrap" hidden>
+                  <label class="sr-only" for="api-model">Свой идентификатор модели (Model ID)</label>
+                  <input id="api-model" name="model" type="text" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="Например: deepseek/deepseek-v4.1-flash-1017">
+                </div>
+                <div class="api-field-info-row">
+                  <span class="api-info-text">
+                    <svg class="api-info-ic" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.2v3.6M8 4.8h.01" stroke-linecap="round"/></svg>
+                    <span id="api-price-note">1k тов.: 36k вход · 9k кэш · 25k выход</span>
+                  </span>
+                  <a class="lk api-price-link" href="https://proxyapi.ru/models/browse" target="_blank" rel="noopener noreferrer">Прайс ProxyAPI →</a>
+                </div>
+              </div>
+
+              <div class="field api-key-col">
+                <label for="api-key">API-ключ:</label>
+                <input id="api-key" name="apiKey" type="password" autocorrect="off" autocapitalize="none" spellcheck="false" autocomplete="off" placeholder="sk-...">
+                <div class="api-field-info-row">
+                  <span class="api-info-text" id="api-docs-note">
+                    <svg class="api-info-ic" width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="8" cy="8" r="6.5"/><path d="M8 7.2v3.6M8 4.8h.01" stroke-linecap="round"/></svg>
+                    <span>Задайте лимит расходов и удалите ключ после работы.</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="api-row-think-storage">
+              <div class="api-thinking-group" role="group" aria-labelledby="api-thinking-hd">
+                <div class="api-thinking-hd" id="api-thinking-hd">Уровень рассуждений (<span lang="en">Thinking</span>)</div>
+                <div class="api-thinking-grid">
+                  <div class="field">
+                    <label for="api-thinking-attr">Параметры</label>
+                    <select id="api-thinking-attr" name="thinkingAttr" class="dm-mini-select"></select>
+                  </div>
+                  <div class="field">
+                    <label for="api-thinking-dash">Дашборд</label>
+                    <select id="api-thinking-dash" name="thinkingDash" class="dm-mini-select"></select>
+                  </div>
+                  <div class="field">
+                    <label for="api-thinking-risk">Риски</label>
+                    <select id="api-thinking-risk" name="thinkingRisk" class="dm-mini-select"></select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="field api-storage-field">
+                <span class="api-thinking-lbl">Хранение ключа</span>
+                <div class="dm-seg" id="api-key-storage-seg" role="group" aria-label="Режим хранения API-ключа">
+                  <button type="button" class="dm-seg-btn" data-api-storage="ram" aria-pressed="true">RAM (по умолч.)</button>
+                  <button type="button" class="dm-seg-btn" data-api-storage="localstorage" aria-pressed="false">localStorage</button>
+                </div>
+              </div>
+            </div>
+
+            <div id="api-test-status" role="status" class="hint"></div>
+
+            <div class="u-row-wrap">
+              <button type="submit" class="bt p sm">Сохранить</button>
+              <button type="button" id="api-test-btn" class="bt sm">Проверить соединение</button>
+              <button type="button" id="api-clear-btn" class="bt sm">Очистить ключ</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="settings-foot">
+        <span id="core2">Ядро: загрузка…</span>
+        <span>v3.48.5</span>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Shared Reference Popover 1: Risk Types & PESTEL -->
+  <div id="rk-help-types-pop" popover="auto" role="dialog" class="rgm-help-pop rk-help-pop" aria-label="Справка по типам рисков и категориям PESTEL">
+    <div class="rgm-help-pop-hd">
+      <h2>Типы рисков и категории PESTEL</h2>
+      <button class="bt sm" type="button" popovertarget="rk-help-types-pop" popovertargetaction="hide">Закрыть</button>
+    </div>
+    <div class="rk-help-cols">
+      <div class="rk-help-sec">
+        <div class="help-col-title">Горизонты развития (Horizon Scanning)</div>
+        <dl class="rk-help-dl">
+          <div class="rk-help-row">
+            <dt><span class="rf-cdot is-swan" aria-hidden="true"></span>Чёрные лебеди</dt>
+            <dd>Внезапный шок без предвестников — сбой платежей, ИТ или логистики. Готовится резервный план заранее.</dd>
+          </div>
+          <div class="rk-help-row">
+            <dt><span class="rf-cdot is-trend" aria-hidden="true"></span>Тренды <span class="rk-help-tag">6+ лет</span></dt>
+            <dd>Долгие структурные сдвиги рынка — автоматизация, СТМ, маркировка. Требуют перестройки модели.</dd>
+          </div>
+          <div class="rk-help-row">
+            <dt><span class="rf-cdot is-event" aria-hidden="true"></span>События <span class="rk-help-tag">~4 года</span></dt>
+            <dd>Волна с пиком и адаптацией — ставка ЦБ, перестройка цепочек поставок. Нужен план прохождения пика.</dd>
+          </div>
+          <div class="rk-help-row">
+            <dt><span class="rf-cdot is-news" aria-hidden="true"></span>Инфоповоды <span class="rk-help-tag">6–12 мес</span></dt>
+            <dd>Краткий всплеск спроса или репутационный шум. Реакция через промо, запасы и коммуникации.</dd>
+          </div>
+          <div class="rk-help-row">
+            <dt><span class="rf-cdot is-weak" aria-hidden="true"></span>Слабые сигналы <span class="rk-help-tag">1–3 г.</span></dt>
+            <dd>Ранние признаки будущих сдвигов. Удобно проверять недорогими пилотами до массового влияния.</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="rk-help-sec">
+        <div class="help-col-title">Категории внешней среды (PESTEL)</div>
+        <dl class="rk-help-dl">
+          <div class="rk-help-row">
+            <dt><span class="rk-help-let">P</span>Политика</dt>
+            <dd>Тарифы, таможня, санкции и трансграничные расчёты.</dd>
+          </div>
+          <div class="rk-help-row">
+            <dt><span class="rk-help-let">E</span>Экономика</dt>
+            <dd>Ключевая ставка, курс валют, инфляция издержек и оборотный капитал.</dd>
+          </div>
+          <div class="rk-help-row">
+            <dt><span class="rk-help-let">S</span>Социум</dt>
+            <dd>Дефицит кадров, демография и сдвиг спроса покупателей в СТМ.</dd>
+          </div>
+          <div class="rk-help-row">
+            <dt><span class="rk-help-let">T</span>Технологии</dt>
+            <dd>Автоматизация, ИИ-ценообразование, киберустойчивость ИТ-контура.</dd>
+          </div>
+          <div class="rk-help-row">
+            <dt><span class="rk-help-let">E</span>Экология</dt>
+            <dd>Экосбор, требования РОП, переработка и упаковка.</dd>
+          </div>
+          <div class="rk-help-row">
+            <dt><span class="rk-help-let">L</span>Право</dt>
+            <dd>Маркировка «Честный ЗНАК», 152-ФЗ, налоги и договорные штрафы.</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shared Reference Popover 2: Risk Map 3x3 & Response Strategies -->
+  <div id="rk-help-map-pop" popover="auto" role="dialog" class="rgm-help-pop rk-help-pop" aria-label="Справка по карте рисков 3 на 3 и стратегиям реагирования">
+    <div class="rgm-help-pop-hd">
+      <h2>Карта рисков 3×3 и стратегии реагирования</h2>
+      <button class="bt sm" type="button" popovertarget="rk-help-map-pop" popovertargetaction="hide">Закрыть</button>
+    </div>
+    <div class="rk-help-cols">
+      <div class="rk-help-sec">
+        <div class="help-col-title">Уровни критичности и механика</div>
+        <dl class="rk-help-dl">
+          <div class="rk-help-row">
+            <dt><span class="rk-mini-badge is-high">••• Высокий</span></dt>
+            <dd>Индекс 3–4. Первоочередные меры, ответственный и жёсткий срок реагирования.</dd>
+          </div>
+          <div class="rk-help-row">
+            <dt><span class="rk-mini-badge is-med">•• Средний</span></dt>
+            <dd>Индекс 2. Плановый контроль триггеров и подготовка резервных действий.</dd>
+          </div>
+          <div class="rk-help-row">
+            <dt><span class="rk-mini-badge is-low">• Низкий</span></dt>
+            <dd>Индекс 0–1. Мониторинг без избыточных затрат на защиту.</dd>
+          </div>
+          <div class="rk-help-row">
+            <dt>Шкалы и перенос</dt>
+            <dd>Пороги (<code>%</code> и <code>млн ₽</code>) задаются через ⚙ в углу матрицы. Карточки перетаскиваются мышью, а кнопка переноса отправляет действие в RICE с меткой <code>-Р</code>.</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="rk-help-sec">
+        <div class="help-col-title">Четыре стратегии реагирования</div>
+        <dl class="rk-help-dl">
+          <div class="rk-help-row">
+            <dt>Снижение <span class="rk-help-tag" lang="en">Mitigation</span></dt>
+            <dd>Резервные поставщики, страховой буфер запаса, дублирование критичных узлов.</dd>
+          </div>
+          <div class="rk-help-row">
+            <dt>Перенос <span class="rk-help-tag" lang="en">Transfer</span></dt>
+            <dd>Страхование грузов, хеджирование валюты, фиксация штрафов в SLA партнёров.</dd>
+          </div>
+          <div class="rk-help-row">
+            <dt>Уклонение <span class="rk-help-tag" lang="en">Avoidance</span></dt>
+            <dd>Отказ от рискованного проекта, канала или убыточного ассортимента.</dd>
+          </div>
+          <div class="rk-help-row">
+            <dt>Принятие <span class="rk-help-tag" lang="en">Acceptance</span></dt>
+            <dd>Осознанный допуск малого риска, если стоимость защиты выше возможного ущерба.</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <!-- Strictly Pointer-Bound Custom Hover Popovers for Risk Cards & Horizon Curves -->
+  <div id="risk-hover-pop" popover="manual" role="tooltip" class="wf-tip risk-hover-pop" hidden></div>
+  <div id="rf-curve-tip" popover="manual" role="tooltip" class="wf-tip rf-curve-tip" hidden></div>
+
+  <!-- Native Dialog: AI Risk Analysis & Clarifying Interview -->
+  <dialog id="rk-ai-dlg" closedby="any" aria-labelledby="rk-ai-title">
+    <div class="rice-modal-shell rk-ai-shell">
+      <div class="rice-modal-hd">
+        <h2 id="rk-ai-title">Поиск рисков с AI</h2>
+        <button type="button" id="rk-ai-close" class="rice-cm-x" aria-label="Закрыть окно">×</button>
+      </div>
+
+      <div class="rice-modal-body rk-ai-body">
+        <div class="rk-ai-top-bar">
+          <div class="seg" role="group" aria-label="Режим работы AI">
+            <button type="button" data-rk-ai-mode="local-ai" aria-pressed="true" title="Локальная нейросеть в браузере (0 ₽, данные остаются на устройстве)">Локально WebGPU · 0 ₽</button>
+            <button type="button" data-rk-ai-mode="api" aria-pressed="false" title="Облачный провайдер по вашему ключу API">API (облако)</button>
+          </div>
+          <button type="button" class="bt sm" id="rk-ai-cfg-btn" hidden>Настройка API</button>
+        </div>
+
+        <div class="rk-ai-grid-2">
+          <div class="rk-ai-sec" role="group" aria-labelledby="rk-ai-sec-what">
+            <div class="rk-ai-sec-hd" id="rk-ai-sec-what">Что искать</div>
+            <label class="rk-ai-chk">
+              <div class="rk-ai-chk-copy">
+                <strong>Поиск новых рисков</strong>
+                <span>На основе данных компании, текущих рисков и ваших ответов в интервью.</span>
+              </div>
+              <input type="checkbox" switch role="switch" class="rk-switch" id="rk-ai-mode-new" checked>
+            </label>
+            <label class="rk-ai-chk">
+              <div class="rk-ai-chk-copy">
+                <strong>Поиск рисков на стыках</strong>
+                <span>Неочевидные пересечения между существующими рисками PESTEL.</span>
+              </div>
+              <input type="checkbox" switch role="switch" class="rk-switch" id="rk-ai-mode-cross" checked>
+            </label>
+            <p class="rk-ai-note" id="rk-ai-order-note">Если включены оба режима, сначала ищутся новые риски, затем — риски на стыках.</p>
+          </div>
+
+          <div class="rk-ai-sec" role="group" aria-labelledby="rk-ai-sec-src">
+            <div class="rk-ai-sec-hd" id="rk-ai-sec-src">Источники данных</div>
+            <label class="rk-ai-chk">
+              <div class="rk-ai-chk-copy">
+                <strong>Данные дашборда и аналитики</strong>
+                <span id="rk-ai-src-dash-meta">Проверка наличия…</span>
+              </div>
+              <input type="checkbox" switch role="switch" class="rk-switch" id="rk-ai-src-dash" checked>
+            </label>
+            <label class="rk-ai-chk">
+              <div class="rk-ai-chk-copy">
+                <strong>Инициативы RICE</strong>
+                <span id="rk-ai-src-rice-meta">Проверка наличия…</span>
+              </div>
+              <input type="checkbox" switch role="switch" class="rk-switch" id="rk-ai-src-rice" checked>
+            </label>
+            <label class="rk-ai-chk">
+              <div class="rk-ai-chk-copy">
+                <strong>Текущие риски</strong>
+                <span id="rk-ai-src-risks-meta">Проверка наличия…</span>
+              </div>
+              <input type="checkbox" switch role="switch" class="rk-switch" id="rk-ai-src-risks" checked>
+            </label>
+            <div class="rk-ai-summary" id="rk-ai-sources-summary"></div>
+          </div>
+        </div>
+
+        <div class="rk-ai-sec rk-ai-interview">
+          <div class="rk-ai-interview-hd">
+            <div>
+              <strong>Интервью с AI <span class="rk-ai-opt">(при необходимости)</span></strong>
+              <p class="rk-ai-note">Модель задаст 3–5 уточняющих вопросов о бизнесе, чтобы найти более точные риски.</p>
+            </div>
+            <button type="button" class="bt sm" id="rk-ai-ask-btn">Запросить уточняющие вопросы</button>
+          </div>
+          <div id="rk-ai-interview-status" class="rk-ai-note" role="status" hidden></div>
+          <div class="rk-ai-questions" id="rk-ai-questions" hidden></div>
+        </div>
+
+        <div class="rk-ai-prog-wrap" id="rk-ai-prog-wrap" hidden>
+          <progress class="imp-progress-bar" id="rk-ai-prog" value="0" max="100"></progress>
+          <span class="imp-progress-pct" id="rk-ai-prog-pct">0%</span>
+          <span id="rk-ai-prog-lbl" role="status">Подготовка…</span>
+        </div>
+
+        <div id="rk-ai-status" class="rk-ai-status" role="status" hidden></div>
+      </div>
+
+      <div class="rice-modal-foot">
+        <button type="button" class="bt sm" id="rk-ai-cancel">Отмена</button>
+        <button type="button" class="bt p sm" id="rk-ai-run">Запустить анализ</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Unified Native Dialog: Risk + RICE Synchronized Detail Form (Item 3, 6, 17) -->
+  <dialog id="rk-detail-dlg" closedby="any" aria-labelledby="rk-dlg-title">
+    <form id="rk-detail-form" class="rice-modal-shell rk-modal-shell" novalidate>
+      <div class="rice-modal-hd">
+        <div class="rk-dlg-hd-left">
+          <h2 id="rk-dlg-title">Детали риска и действия</h2>
+          <span class="rf-sev-badge is-med" id="rk-dlg-sev-badge">•• Средний · 2</span>
+          <span class="rice-modal-sub" id="rk-dlg-rice-preview">RICE: —</span>
+        </div>
+        <button type="button" id="rk-dlg-close" class="rice-cm-x" aria-label="Закрыть окно">×</button>
+      </div>
+
+      <div class="rice-modal-body rk-modal-body">
+        <input type="hidden" id="rk-f-id" value="">
+        <div class="rf-dlg-split">
+          <!-- Left Column: Risk Classification & 3x3 Matrix -->
+          <div class="rf-dlg-col">
+            <div class="rf-field">
+              <label for="rk-f-title">Риск (название) <span aria-hidden="true">*</span></label>
+              <input type="text" id="rk-f-title" required minlength="3" maxlength="180" placeholder="Например: Срыв поставок ключевого сырья и рост плеча логистики">
+              <div id="rk-f-title-err" class="rf-field-err" hidden>Укажите название риска (минимум 3 символа).</div>
+            </div>
+
+            <div class="rf-field">
+              <label for="rk-f-desc">Описание риска и влияние на бизнес</label>
+              <textarea id="rk-f-desc" rows="2" maxlength="400" placeholder="Контекст уязвимости, последствия для маржи и операций (синхронизируется с комментарием RICE)…"></textarea>
+            </div>
+
+            <div class="rf-form-row-2">
+              <div class="rf-field">
+                <label for="rk-f-pestel">Категория PESTEL</label>
+                <select id="rk-f-pestel">
+                  <option value="">—</option>
+                  <option value="P">P · Политика</option>
+                  <option value="E">E · Экономика</option>
+                  <option value="S">S · Социум</option>
+                  <option value="T">T · Технологии</option>
+                  <option value="Env">E · Экология</option>
+                  <option value="L">L · Право</option>
+                </select>
+              </div>
+              <div class="rf-field">
+                <label for="rk-f-curve">Тип / горизонт</label>
+                <select id="rk-f-curve">
+                  <option value="">—</option>
+                  <option value="black_swan">Чёрный лебедь (шок)</option>
+                  <option value="trend">Тренд (6+ лет)</option>
+                  <option value="event">Событие (~4 года)</option>
+                  <option value="news">Инфоповод (6–12 мес)</option>
+                  <option value="weak">Слабый сигнал (1–3 г.)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="rk-matrix-pick-row">
+              <div class="rf-mini-picker-box">
+                <div class="rf-mini-grid" id="rk-mini-grid" role="group" aria-label="Быстрый выбор ячейки матрицы 3 на 3"></div>
+              </div>
+              <div class="rk-prob-imp-col">
+                <div class="rf-field">
+                  <label for="rk-f-prob">Вероятность</label>
+                  <select id="rk-f-prob">
+                    <option value="">—</option>
+                    <option value="0">Вероятно</option>
+                    <option value="1">Возможно</option>
+                    <option value="2">Маловероятно</option>
+                  </select>
+                </div>
+                <div class="rf-field">
+                  <label for="rk-f-imp">Влияние риска</label>
+                  <select id="rk-f-imp">
+                    <option value="">—</option>
+                    <option value="0">Небольшое</option>
+                    <option value="1">Умеренное</option>
+                    <option value="2">Существенное</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Action Plan & RICE Fields -->
+          <div class="rf-dlg-col">
+            <div class="rf-field">
+              <label for="rk-f-action">Решение / действие (идея для приоритизации RICE)</label>
+              <textarea id="rk-f-action" rows="2" maxlength="400" placeholder="Конкретная мера реагирования, которая переносится как идея в таблицу RICE…"></textarea>
+            </div>
+
+            <div class="rf-form-row-2">
+              <div class="rf-field">
+                <label for="rk-f-strat">Стратегия обработки</label>
+                <select id="rk-f-strat">
+                  <option value="">—</option>
+                  <option value="0">Снижение (Mitigation)</option>
+                  <option value="1">Перенос (Transfer)</option>
+                  <option value="2">Уклонение (Avoidance)</option>
+                  <option value="3">Принятие (Acceptance)</option>
+                </select>
+              </div>
+              <div class="rf-field">
+                <label for="rk-f-status">Статус</label>
+                <select id="rk-f-status">
+                  <option value="Черновик">Черновик</option>
+                  <option value="На рассмотрении">На рассмотрении</option>
+                  <option value="Утверждено">Утверждено</option>
+                  <option value="Отклонено">Отклонено</option>
+                  <option value="__custom__">Другое…</option>
+                </select>
+                <input type="text" id="rk-f-status-custom" class="rice-custom-st-inp" placeholder="Свой статус..." hidden>
+              </div>
+            </div>
+
+            <div class="rf-form-row-2">
+              <div class="rf-field">
+                <label for="rk-f-owner">Ответственный</label>
+                <input type="text" id="rk-f-owner" maxlength="80" placeholder="Директор по закупкам">
+              </div>
+              <div class="rf-field">
+                <span class="rf-sub-lbl">Решение/действие необходимо до</span>
+                <input type="hidden" id="rk-f-deadline" value="">
+                <button type="button" class="rice-date-btn rice-date-btn-lg is-empty" id="rk-f-deadline-btn">
+                  <span id="rk-f-deadline-lbl">Выбрать дату</span>
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3.5" width="12" height="10.5" rx="2"/><path d="M5 2v2.5M11 2v2.5M2 7h12"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="rf-field">
+              <label for="rk-f-resources">Необходимые ресурсы</label>
+              <input type="text" id="rk-f-resources" maxlength="240" placeholder="Команда, бюджет, ИТ-доработки…">
+            </div>
+          </div>
+        </div>
+
+        <!-- Synchronized RICE Metrics Strip + On-Demand Justifications -->
+        <div class="rk-rice-strip">
+          <div class="rk-rice-4col">
+            <label class="rf-field">
+              <span><span lang="en">Reach</span> (охват)</span>
+              <select id="rk-f-reach-sel"></select>
+              <input type="number" id="rk-f-reach-num" min="1" step="50" hidden>
+            </label>
+            <label class="rf-field">
+              <span><span lang="en">Impact</span> (эффект мер)</span>
+              <select id="rk-f-rice-imp"></select>
+            </label>
+            <label class="rf-field">
+              <span><span lang="en">Confidence</span> (уверенность)</span>
+              <select id="rk-f-conf"></select>
+            </label>
+            <label class="rf-field">
+              <span><span lang="en">Effort</span> (усилия)</span>
+              <select id="rk-f-effort-sel"></select>
+              <input type="number" id="rk-f-effort-num" min="0.5" step="0.5" hidden>
+            </label>
+          </div>
+
+          <details class="rk-just-details" id="rk-just-details">
+            <summary>Обоснования параметров RICE (Reach, Impact, Confidence, Effort)</summary>
+            <div class="rf-form-row-2 rk-just-grid">
+              <label class="rf-field">
+                <span>Обоснование охвата (<span lang="en">Reach</span>)</span>
+                <textarea id="rk-f-reach-desc" rows="2" placeholder="Кого и какой объём операций затрагивают меры?"></textarea>
+              </label>
+              <label class="rf-field">
+                <span>Обоснование эффекта (<span lang="en">Impact</span>)</span>
+                <textarea id="rk-f-impact-desc" rows="2" placeholder="Какой ущерб предотвращается или какой эффект даёт действие?"></textarea>
+              </label>
+              <label class="rf-field">
+                <span>Уровень риска реализации (<span lang="en">Confidence</span>)</span>
+                <textarea id="rk-f-conf-desc" rows="2" placeholder="Насколько подтверждены расчёты и готовность ресурсов?"></textarea>
+              </label>
+              <label class="rf-field">
+                <span>Обоснование трудозатрат (<span lang="en">Effort</span>)</span>
+                <textarea id="rk-f-effort-desc" rows="2" placeholder="Сроки и трудоёмкость в неделях или человеко-месяцах…"></textarea>
+              </label>
+            </div>
+          </details>
+        </div>
+      </div>
+
+      <div class="rice-modal-foot rm-dlg-foot">
+        <div class="u-row-wrap-8">
+          <button type="button" id="rk-dlg-del" class="bt sm rm-btn-danger" hidden>Удалить</button>
+          <button type="button" id="rk-dlg-to-rice" class="bt sm">Сохранить и в RICE →</button>
+        </div>
+        <div class="u-row-wrap-8">
+          <button type="button" id="rk-dlg-cancel" class="bt sm">Отмена</button>
+          <button type="submit" id="rk-dlg-save" class="bt p sm">Сохранить</button>
+        </div>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Native Dialog: Configure Axis Thresholds & Horizon Period -->
+  <dialog id="rm-scales-dlg" closedby="any" aria-labelledby="rm-scales-title">
+    <div class="pb legal-box rf-dlg-box">
+      <div class="legal-hd">
+        <h2 id="rm-scales-title">Шкалы и период оценки рисков</h2>
+        <button type="button" id="rm-scales-x" class="rice-cm-x" aria-label="Закрыть окно">×</button>
+      </div>
+      <form id="rm-scales-form" class="rf-form">
+        <div class="rf-field">
+          <label for="rm-sc-period">Период оценки (Фреймворк и Карта рисков)</label>
+          <input type="text" id="rm-sc-period" maxlength="32" placeholder="2025–2028 гг.">
+        </div>
+        <div class="rf-form-row-2">
+          <div class="rf-field">
+            <label for="rm-sc-p0">Вероятно (порог %)</label>
+            <input type="text" id="rm-sc-p0" maxlength="24" placeholder="&gt; 70%">
+          </div>
+          <div class="rf-field">
+            <label for="rm-sc-i0">Небольшое влияние (порог ₽)</label>
+            <input type="text" id="rm-sc-i0" maxlength="24" placeholder="&lt; 1 млн ₽">
+          </div>
+          <div class="rf-field">
+            <label for="rm-sc-p1">Возможно (порог %)</label>
+            <input type="text" id="rm-sc-p1" maxlength="24" placeholder="30–70%">
+          </div>
+          <div class="rf-field">
+            <label for="rm-sc-i1">Умеренное влияние (порог ₽)</label>
+            <input type="text" id="rm-sc-i1" maxlength="24" placeholder="1–5 млн ₽">
+          </div>
+          <div class="rf-field">
+            <label for="rm-sc-p2">Маловероятно (порог %)</label>
+            <input type="text" id="rm-sc-p2" maxlength="24" placeholder="&lt; 30%">
+          </div>
+          <div class="rf-field">
+            <label for="rm-sc-i2">Существенное влияние (порог ₽)</label>
+            <input type="text" id="rm-sc-i2" maxlength="24" placeholder="&gt; 5 млн ₽">
+          </div>
+        </div>
+        <div class="dm-confirm-actions rm-dlg-foot">
+          <button type="button" id="rm-scales-reset" class="bt sm">По умолчанию</button>
+          <div class="u-row-wrap-8">
+            <button type="button" id="rm-scales-cancel" class="bt sm">Отмена</button>
+            <button type="submit" class="bt p sm">Применить</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- Unified Native Dialog: Import Risks (.xlsx / .csv / Paste) -->
+  <dialog id="rk-import-dlg" closedby="any" aria-labelledby="rk-imp-title">
+    <div class="pb legal-box rf-dlg-box">
+      <div class="legal-hd">
+        <h2 id="rk-imp-title">Импорт рисков (PESTEL и Карта 3×3)</h2>
+        <button type="button" id="rk-imp-x" class="rice-cm-x" aria-label="Закрыть окно">×</button>
+      </div>
+      <div class="rf-form">
+        <div class="rk-imp-guide">
+          <div class="rk-imp-guide-row">
+            <strong>Способ 1 — файл</strong>
+            <span>Загрузите таблицу <code>.xlsx</code> или <code>.csv</code> (в том числе ранее выгруженную из Sparkle). Заголовки распознаются автоматически.</span>
+          </div>
+          <div class="rk-imp-guide-row">
+            <strong>Способ 2 — вставка</strong>
+            <span>Вставьте список названий (1 строка = 1 риск) или скопируйте столбцы прямо из Excel через <code>;</code> или <code>Tab</code> в порядке: <em>Название; Описание; PESTEL; Тип; Вероятность; Влияние; Стратегия; Действие; Ответственный; Срок</em>.</span>
+          </div>
+        </div>
+        <div class="rf-imp-file-bar">
+          <input type="file" id="rk-imp-file" accept=".xlsx,.csv,.txt" hidden>
+          <button type="button" class="bt sm" id="rk-imp-choose">Выбрать файл (.xlsx, .csv)</button>
+          <span class="rf-field-hint" id="rk-imp-file-lbl">Файл не выбран — можно вставить текст ниже</span>
+        </div>
+        <div class="rf-field">
+          <label for="rk-imp-paste">Вставка рисков (достаточно только названия, остальные поля опциональны)</label>
+          <textarea id="rk-imp-paste" rows="4" placeholder="Пример одной строкой:
+Срыв поставок сырья; Рост плеча логистики; Политика; Событие; Вероятно; Существенное; Снижение; Квалифицировать 2 поставщика; Директор по закупкам; 2026-06-15"></textarea>
+        </div>
+        <div class="seg" role="group" aria-label="Режим добавления при импорте">
+          <button type="button" data-rk-imp-mode="append" aria-pressed="true">Добавить к текущим</button>
+          <button type="button" data-rk-imp-mode="replace" aria-pressed="false">Заменить реестр</button>
+        </div>
+        <p class="rf-field-hint" id="rk-imp-preview" role="status">Готово к импорту рисков: 0</p>
+        <div class="dm-confirm-actions">
+          <button type="button" id="rk-imp-cancel" class="bt sm">Отмена</button>
+          <button type="button" id="rk-imp-apply" class="bt p sm">Импортировать</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Native Confirmation Dialog for Data Clearing & Storage Switching -->
+  <dialog id="data-confirm-dlg" closedby="closerequest" aria-labelledby="data-confirm-title">
+    <div class="pb legal-box dm-confirm-box">
+      <div class="legal-hd">
+        <h2 id="data-confirm-title">Подтверждение действия</h2>
+      </div>
+      <p id="data-confirm-desc" class="ds-lead"></p>
+      <form method="dialog" class="dm-confirm-actions">
+        <button type="submit" value="cancel" class="bt sm" autofocus>Отмена</button>
+        <button type="submit" value="confirm" id="data-confirm-ok" class="bt p sm">Подтвердить</button>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- Native Confirmation Modal Dialog Before Local Browser Model Download -->
+  <dialog id="local-confirm-dlg" closedby="any" aria-labelledby="local-confirm-title">
+    <div class="pb legal-box">
+      <div class="legal-hd">
+        <h2 id="local-confirm-title">Подтверждение загрузки локальной AI-модели</h2>
+        <button type="button" id="local-confirm-x" class="bt sm" aria-label="Закрыть окно">Закрыть</button>
+      </div>
+
+      <div id="local-confirm-body" class="confirm-facts"></div>
+
+      <div class="sw-row u-mt12">
+        <label class="sw-label" for="local-confirm-cache-switch">
+          <input id="local-confirm-cache-switch" type="checkbox" switch>
+          <span>Сохранить модель на диске после завершения (иначе удалится автоматически)</span>
+        </label>
+      </div>
+
+      <div class="u-row-wrap u-mt16">
+        <button type="button" id="local-confirm-go" class="bt p sm">Подтвердить и начать скачивание</button>
+        <button type="button" id="local-confirm-cancel" class="bt sm">Отмена</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- File Import Modes & 1-Click Column Mapping Dialog -->
+  <dialog id="import-dlg" closedby="any" aria-labelledby="imp-dlg-title">
+    <div class="pb legal-box ds-dlg-box imp-dlg-box">
+      <div class="legal-hd">
+        <h2 id="imp-dlg-title">Импорт файла (.xlsx, .csv, .txt)</h2>
+        <button type="button" id="imp-dlg-close" class="bt sm" aria-label="Закрыть окно">Закрыть</button>
+      </div>
+
+      <fieldset class="ds-storage-grid">
+        <legend class="sr-only">Режим импорта файла</legend>
+
+        <label class="ds-choice-card">
+          <input type="radio" name="imp-mode" value="simple" checked>
+          <div class="ds-choice-hd">
+            <span class="ds-radio-dot" aria-hidden="true"></span>
+            <strong>Простой импорт</strong>
+            <span class="help-chip">быстро</span>
+          </div>
+          <p>Забирает названия товаров и список параметров — предзаполненные значения ячеек параметров не используются при разборе.</p>
+        </label>
+
+        <label class="ds-choice-card">
+          <input type="radio" name="imp-mode" value="use-data">
+          <div class="ds-choice-hd">
+            <span class="ds-radio-dot" aria-hidden="true"></span>
+            <strong>С использованием данных</strong>
+            <span class="help-chip">сверка</span>
+          </div>
+          <p>Учитывает уже заполненные ячейки параметров. При сомнении сохраняет исходное значение, подсвечивая <b>название красным</b>, а <b>спорный параметр жёлтым</b> (на экране и в .xlsx).</p>
+        </label>
+      </fieldset>
+
+      <label class="imp-sec-row" for="imp-secondary-chk">
+        <input id="imp-secondary-chk" type="checkbox">
+        <div>
+          <strong>Сохранять второстепенные данные</strong>
+          <span>Дополнительные столбцы (выручка, прибыль, месяцы, магазины и т.д.) сохраняются в памяти и после разбора объединяются с выделенными параметрами по названию товара (1-к-N, все исходные строки).</span>
+        </div>
+      </label>
+
+      <div id="imp-progress-box" class="imp-progress-box" role="status" aria-live="polite" hidden>
+        <div class="imp-progress-hd">
+          <span id="imp-progress-stage" class="imp-progress-stage">Чтение файла…</span>
+          <span id="imp-progress-pct" class="imp-progress-pct">0%</span>
+        </div>
+        <progress id="imp-progress-bar" class="imp-progress-bar" value="0" max="100"></progress>
+        <div class="imp-progress-foot">
+          <span id="imp-progress-file"></span>
+          <button type="button" id="imp-cancel-load" class="lk">Отмена</button>
+        </div>
+      </div>
+
+      <div id="imp-mapping-box" class="imp-mapping-box" hidden>
+        <div class="imp-mapping-hd">
+          <strong id="imp-map-file">Файл</strong>
+          <span class="help-chip" id="imp-map-summary"></span>
+        </div>
+        <p class="ds-lead u-fs-xs">Укажите колонку «Название товара» и роли остальных столбцов (роль «Второстепенный» активна при включённом чекбоксе выше):</p>
+        <div id="imp-map-list" class="imp-map-list"></div>
+
+        <div class="imp-params-box">
+          <div class="imp-mapping-hd">
+            <label for="imp-param-add-inp" class="imp-params-title">Параметры для выделения <span class="imp-params-hint">· перетащите за ⋮⋮ для смены порядка</span></label>
+            <span class="help-chip" id="imp-params-cnt">0 шт.</span>
+          </div>
+          <div id="imp-params-chips" class="imp-params-chips" role="list" aria-label="Список параметров для выделения"></div>
+          <div class="imp-param-add-row">
+            <input id="imp-param-add-inp" type="text" class="st-input imp-param-add-inp" placeholder="Добавить параметр (через запятую или Enter)…" autocomplete="off" enterkeyhint="done">
+            <button type="button" id="imp-param-add-btn" class="bt sm">+ Добавить</button>
+          </div>
+        </div>
+
+        <div id="imp-map-error" class="imp-map-error" role="status" aria-live="polite" hidden></div>
+      </div>
+
+      <div class="u-row-between-10">
+        <div class="u-row-wrap">
+          <button type="button" id="imp-choose-file" class="bt p sm">Выбрать файл…</button>
+          <button type="button" id="imp-apply-btn" class="bt p sm" hidden>Применить импорт</button>
+          <button type="button" id="imp-rechoose-btn" class="bt sm" hidden>Другой файл</button>
+        </div>
+        <span class="u-fs-xs u-mu">Лимит: до 15 МБ и 100 000 строк · 100% в браузере</span>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Internal Workspace Dataset Save Dialog (Session RAM / IndexedDB) -->
+  <dialog id="dataset-save-dlg" closedby="any" aria-labelledby="ds-dlg-title">
+    <div class="pb legal-box ds-dlg-box">
+      <div class="legal-hd">
+        <h2 id="ds-dlg-title">Сохранить внутри приложения</h2>
+        <button type="button" id="ds-dlg-close" class="bt sm" aria-label="Закрыть окно">Закрыть</button>
+      </div>
+
+      <p class="ds-lead">
+        Данные хранятся <b>только в вашем браузере</b> и не передаются на сервер. После сохранения набор доступен в разделе «Дашборд» (интеграция с «Аналитикой рынка» — в разработке).
+      </p>
+
+      <div class="ds-form-row">
+        <div class="rgm-field">
+          <label class="rgm-sub-lbl" for="ds-name-inp">Название датасета</label>
+          <input id="ds-name-inp" class="st-input" type="text" maxlength="120" autocomplete="off" placeholder="Пользователь (дд.мм.гггг чч.мм.сс)">
+        </div>
+        <div class="ds-curr-badge" id="ds-current-meta">0 строк · 0 КБ</div>
+      </div>
+
+      <fieldset class="ds-storage-grid">
+        <legend class="sr-only">Выберите режим хранения датасета</legend>
+
+        <label class="ds-choice-card" id="ds-card-ram">
+          <input type="radio" name="ds-storage" value="session" checked>
+          <div class="ds-choice-hd">
+            <span class="ds-radio-dot" aria-hidden="true"></span>
+            <strong>Память сессии (RAM)</strong>
+            <span class="help-chip">по умолчанию</span>
+          </div>
+          <div class="ds-metrics">
+            <div class="spec-tile"><span class="spec-k">Занято</span><span class="spec-v" id="ds-ram-usage">0 Б (0 шт.)</span></div>
+            <div class="spec-tile"><span class="spec-k">Лимит</span><span class="spec-v">~50–150 МБ (RAM)</span></div>
+          </div>
+          <p>Не пишется на диск и <b>полностью стирается</b> при обновлении (F5) или закрытии вкладки. Недоступно из других вкладок браузера.</p>
+        </label>
+
+        <label class="ds-choice-card" id="ds-card-idb">
+          <input type="radio" name="ds-storage" value="indexeddb">
+          <div class="ds-choice-hd">
+            <span class="ds-radio-dot" aria-hidden="true"></span>
+            <strong>IndexedDB (браузер)</strong>
+            <span class="help-chip">постоянно</span>
+          </div>
+          <div class="ds-metrics">
+            <div class="spec-tile"><span class="spec-k">Занято</span><span class="spec-v" id="ds-idb-usage">0 Б (0 шт.)</span></div>
+            <div class="spec-tile"><span class="spec-k">Квота</span><span class="spec-v" id="ds-idb-quota">оценка…</span></div>
+          </div>
+          <p>Переживает перезагрузку вкладки. <b>Нюансы:</b> в инкогнито удаляется при закрытии; на общем ПК видна в профиле до очистки; при нехватке места браузер может очистить БД.</p>
+        </label>
+      </fieldset>
+
+      <div class="u-row-between-10">
+        <div class="u-row-wrap">
+          <button type="button" id="ds-save-confirm" class="bt p sm">Сохранить внутри приложения</button>
+          <button type="button" id="ds-open-trigger" class="bt sm dl-trigger" aria-haspopup="menu" aria-expanded="false" commandfor="ds-open-menu" command="toggle-popover">
+            Открыть в <span class="dl-caret" aria-hidden="true">▾</span>
+          </button>
+          <div id="ds-open-menu" popover="auto" class="dl-menu-pop">
+            <div focusgroup="menu nomemory" aria-labelledby="ds-open-trigger" class="dl-menu-list">
+              <button type="button" data-ds-nav="#dashboard">
+                <span>Дашборд</span>
+                <span class="dl-ext" aria-hidden="true">→</span>
+              </button>
+              <button type="button" disabled title="Модуль аналитики рынка находится в разработке">
+                <span>Аналитика рынка</span>
+                <span class="dl-ext">в разработке</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <button type="button" id="ds-clear-idb" class="lk">Очистить IndexedDB</button>
+      </div>
+
+      <div class="ds-saved-wrap">
+        <div class="help-col-title u-mb6">Сохранённые датасеты (<span id="ds-saved-count">0</span>)</div>
+        <div id="ds-saved-list" class="ds-saved-list"></div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- RICE Column Excel-like Filter & Sort Popover -->
+  <div id="rice-col-menu" class="rice-col-menu" popover="auto" role="dialog" aria-label="Фильтр и сортировка столбца">
+    <div class="rice-cm-hd">
+      <strong id="rice-cm-title">Столбец</strong>
+      <button type="button" class="rice-cm-x" id="rice-cm-close" aria-label="Закрыть">×</button>
+    </div>
+    <div class="rice-cm-sort">
+      <button type="button" class="rice-cm-sort-btn" data-cm-sort="asc">↑ По возрастанию (А→Я)</button>
+      <button type="button" class="rice-cm-sort-btn" data-cm-sort="desc">↓ По убыванию (Я→А)</button>
+    </div>
+    <div class="rice-cm-source" id="rice-cm-source" role="group" aria-label="Фильтр идей и рисков" hidden>
+      <span class="rice-cm-src-lbl">Тип записей:</span>
+      <div class="seg rice-cm-src-seg">
+        <button type="button" data-cm-src="all" aria-pressed="true">Все</button>
+        <button type="button" data-cm-src="ideas" aria-pressed="false">Идеи</button>
+        <button type="button" data-cm-src="risks" aria-pressed="false">Риски (-Р)</button>
+      </div>
+    </div>
+    <div class="rice-cm-filter-wrap">
+      <input type="search" id="rice-cm-search" class="rice-cm-search" placeholder="Найти значение...">
+      <label class="rice-cm-all">
+        <input type="checkbox" id="rice-cm-all" checked>
+        <span>Выделить всё</span>
+      </label>
+      <div class="rice-cm-list" id="rice-cm-list"></div>
+    </div>
+    <div class="rice-cm-foot">
+      <button type="button" class="bt sm" id="rice-cm-reset">Сбросить</button>
+      <button type="button" class="bt p sm" id="rice-cm-apply">Применить</button>
+    </div>
+  </div>
+
+  <!-- RICE Custom Modern Datepicker Popover -->
+  <div id="rice-datepicker" class="rice-dp" popover="auto" role="dialog" aria-label="Выбор даты">
+    <div class="rice-dp-hd">
+      <button type="button" class="rice-dp-nav" id="rice-dp-prev" aria-label="Предыдущий месяц">‹</button>
+      <strong id="rice-dp-month"></strong>
+      <button type="button" class="rice-dp-nav" id="rice-dp-next" aria-label="Следующий месяц">›</button>
+    </div>
+    <div class="rice-dp-wd" aria-hidden="true">
+      <span>Пн</span><span>Вт</span><span>Ср</span><span>Чт</span><span>Пт</span><span>Сб</span><span>Вс</span>
+    </div>
+    <div class="rice-dp-days" id="rice-dp-days"></div>
+    <div class="rice-dp-quick">
+      <button type="button" data-dp-quick="today">Сегодня</button>
+      <button type="button" data-dp-quick="month">+1 мес</button>
+      <button type="button" data-dp-quick="quarter">Конец кв.</button>
+      <button type="button" data-dp-quick="clear">Очистить</button>
+    </div>
+  </div>
+
+  <!-- RICE Floating Hover Tooltip (Headers & Cells) -->
+  <div id="rice-hover-tip" class="rice-hover-tip" role="tooltip" hidden></div>
+
+  <!-- RICE Structured BI Chart Tooltip (Dashboard-style) -->
+  <div id="rice-chart-tip" class="wf-tip rice-chart-tip" role="tooltip" hidden></div>
+
+  <!-- RICE Initiative Full 12-Field Detail Dialog -->
+  <dialog id="rice-detail-dlg" closedby="any" aria-labelledby="rice-detail-title">
+    <form class="rice-modal-shell" id="rice-detail-form">
+      <div class="rice-modal-hd">
+        <div>
+          <h2 id="rice-detail-title">Детали инициативы</h2>
+          <span class="rice-modal-sub" id="rice-d-score-preview">RICE score: —</span>
+        </div>
+        <button type="button" id="rice-detail-close" class="rice-cm-x" aria-label="Закрыть окно">×</button>
+      </div>
+
+      <div class="rice-modal-body">
+        <div class="rice-dlg-grid">
+          <label class="rice-f rice-f-full">
+            <span id="rice-d-idea-field-lbl">Идея</span>
+            <textarea id="rice-d-idea" rows="2" required placeholder="Сформулируйте стратегическую инициативу..."></textarea>
+          </label>
+
+          <label class="rice-f">
+            <span>Ответственный</span>
+            <input type="text" id="rice-d-resp" placeholder="Фамилия Имя (должность)">
+          </label>
+          <div class="rice-f">
+            <span id="rice-d-deadline-field-lbl">Срок реализации</span>
+            <input type="hidden" id="rice-d-deadline">
+            <button type="button" class="rice-date-btn rice-date-btn-lg" id="rice-d-deadline-btn">
+              <span id="rice-d-deadline-lbl">Выбрать дату</span>
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="3.5" width="12" height="10.5" rx="2"/><path d="M5 2v2.5M11 2v2.5M2 7h12"/></svg>
+            </button>
+          </div>
+          <div class="rice-f">
+            <span>Статус</span>
+            <select id="rice-d-status" class="rice-nice-sel">
+              <option value="Черновик">Черновик</option>
+              <option value="Утверждено">Утверждено</option>
+              <option value="На рассмотрении">На рассмотрении</option>
+              <option value="Отклонено">Отклонено</option>
+              <option value="__custom__">Другое…</option>
+            </select>
+            <input type="text" id="rice-d-status-custom" class="rice-custom-st-inp" placeholder="Введите свой статус..." hidden>
+          </div>
+
+          <div class="rice-res-comm-row rice-f-full">
+            <label class="rice-f">
+              <span>Необходимые ресурсы</span>
+              <textarea id="rice-d-resources" rows="2" placeholder="Внутренние и дополнительные ресурсы..."></textarea>
+            </label>
+            <label class="rice-f">
+              <span id="rice-d-comm-field-lbl">Комментарий</span>
+              <textarea id="rice-d-comment" rows="2" placeholder="Дополнительные заметки..."></textarea>
+            </label>
+          </div>
+
+          <div class="rice-metric-row rice-f-full">
+            <label class="rice-f">
+              <span lang="en">Reach</span>
+              <select id="rice-d-reach-sel" class="rice-nice-sel"></select>
+              <input type="number" id="rice-d-reach-num" min="1" step="50" hidden>
+            </label>
+            <label class="rice-f">
+              <span>Обоснование охвата (<span lang="en">Reach</span>)</span>
+              <textarea id="rice-d-reach-desc" rows="2" placeholder="Кого и сколько затронет инициатива?"></textarea>
+            </label>
+          </div>
+
+          <div class="rice-metric-row rice-f-full">
+            <label class="rice-f">
+              <span lang="en">Impact</span>
+              <select id="rice-d-impact-sel" class="rice-nice-sel"></select>
+            </label>
+            <label class="rice-f">
+              <span>Обоснование эффекта (<span lang="en">Impact</span>)</span>
+              <textarea id="rice-d-impact-desc" rows="2" placeholder="Какой бизнес-эффект ожидается?"></textarea>
+            </label>
+          </div>
+
+          <div class="rice-metric-row rice-f-full">
+            <label class="rice-f">
+              <span lang="en">Confidence</span>
+              <select id="rice-d-conf-sel" class="rice-nice-sel"></select>
+            </label>
+            <label class="rice-f">
+              <span>Уровень риска и&nbsp;обоснование (<span lang="en">Confidence</span>)</span>
+              <textarea id="rice-d-conf-desc" rows="2" placeholder="Насколько надёжны данные и ресурсы?"></textarea>
+            </label>
+          </div>
+
+          <div class="rice-metric-row rice-f-full">
+            <label class="rice-f">
+              <span lang="en">Effort</span>
+              <select id="rice-d-effort-sel" class="rice-nice-sel"></select>
+              <input type="number" id="rice-d-effort-num" min="0.5" step="0.5" hidden>
+            </label>
+            <label class="rice-f">
+              <span>Объём ресурсов и&nbsp;обоснование (<span lang="en">Effort</span>)</span>
+              <textarea id="rice-d-effort-desc" rows="2" placeholder="Трудозатраты в часах / чел.-месяцах..."></textarea>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="rice-modal-foot">
+        <button type="button" class="bt sm" id="rice-detail-cancel">Отмена</button>
+        <button type="submit" class="bt p sm" id="rice-detail-submit">Сохранить изменения</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- RICE Export Format Dialog -->
+  <dialog id="rice-export-dlg" closedby="any" aria-labelledby="rice-export-title">
+    <div class="rice-modal-shell rice-io-shell">
+      <div class="rice-modal-hd">
+        <h2 id="rice-export-title">Экспорт инициатив RICE</h2>
+        <button type="button" id="rice-export-close" class="bt sm" aria-label="Закрыть окно">Закрыть</button>
+      </div>
+      <div class="rice-modal-body">
+        <div class="rice-io-opts">
+          <label class="rice-io-card is-active">
+            <input type="radio" name="rice-export-fmt" value="xlsx" checked>
+            <div>
+              <strong>Таблица Excel (<span lang="en">.xlsx</span>)</strong>
+              <span>Все 12&nbsp;колонок шаблона стратегической сессии: приоритет, идея, R/I/C/E с&nbsp;обоснованиями, RICE&nbsp;score, ресурсы, комментарий и&nbsp;статус.</span>
+            </div>
+          </label>
+        </div>
+      </div>
+      <div class="rice-modal-foot">
+        <button type="button" class="bt sm" id="rice-export-cancel">Отмена</button>
+        <button type="button" class="bt p sm" id="rice-export-confirm">Скачать .xlsx</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- RICE Import Mode Dialog -->
+  <dialog id="rice-import-dlg" closedby="any" aria-labelledby="rice-import-title">
+    <div class="rice-modal-shell rice-io-shell">
+      <div class="rice-modal-hd">
+        <h2 id="rice-import-title">Импорт инициатив из&nbsp;<span lang="en">.xlsx</span></h2>
+        <button type="button" id="rice-import-close" class="bt sm" aria-label="Закрыть окно">Закрыть</button>
+      </div>
+      <div class="rice-modal-body">
+        <div class="rice-io-opts">
+          <label class="rice-io-card">
+            <input type="radio" name="rice-import-mode" value="append" checked>
+            <div>
+              <strong>Добавить к&nbsp;текущим (без&nbsp;дубликатов)</strong>
+              <span>Сохраняет текущие инициативы и&nbsp;добавляет новые из&nbsp;файла. Дубликаты определяются по&nbsp;тройке «Идея + Ответственный + Срок».</span>
+            </div>
+          </label>
+          <label class="rice-io-card">
+            <input type="radio" name="rice-import-mode" value="overwrite">
+            <div>
+              <strong>Перезаписать текущий список</strong>
+              <span>Удаляет все текущие инициативы в&nbsp;таблице и&nbsp;загружает список полностью из&nbsp;выбранного файла.</span>
+            </div>
+          </label>
+        </div>
+        <input type="file" id="rice-import-file" accept=".xlsx" hidden>
+      </div>
+      <div class="rice-modal-foot">
+        <button type="button" class="bt sm" id="rice-import-cancel">Отмена</button>
+        <button type="button" class="bt p sm" id="rice-import-pick">Выбрать файл .xlsx</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Legal Information Native Modal Dialog -->
+  <dialog id="legal-dlg" closedby="any" aria-labelledby="legal-title">
+    <div class="pb legal-box">
+      <div class="legal-hd">
+        <h2 id="legal-title">Правовая информация</h2>
+        <button type="button" id="legal-close" class="bt sm" aria-label="Закрыть окно">Закрыть</button>
+      </div>
+      <div id="legal-content"></div>
+    </div>
+  </dialog>
+
+  <!-- Floating BI Tooltip & Toast & Live Region -->
+  <div class="wf-tip" id="wf-tip" role="tooltip" hidden></div>
+  <div class="ts" id="ts" hidden role="status"></div>
+  <div class="sr-only" id="live" aria-live="polite"></div>
+
+  <script type="module" src="js/app.js?v=3.48.5"></script>
+</body>
+</html>
